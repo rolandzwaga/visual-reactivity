@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { tracker } from "./tracker";
+import { tracker } from "../tracker";
 
 describe("ReactivityTracker", () => {
 	beforeEach(() => {
