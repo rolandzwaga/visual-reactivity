@@ -1,0 +1,43 @@
+{
+	"name": "visual-reactivity",
+	"version": "1.0.0",
+	"description": "",
+	"homepage": "https://github.com/rolandzwaga/visual-reactivity#readme",
+	"bugs": {
+		"url": "https://github.com/rolandzwaga/visual-reactivity/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rolandzwaga/visual-reactivity.git"
+	},
+	"license": "ISC",
+	"author": "",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"lint": "biome lint .",
+		"lint:css": "stylelint \"**/*.module.css\"",
+		"format": "biome format --write .",
+		"check": "biome check --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"solid-js": "1.9.10"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.11",
+		"@types/node": "25.0.3",
+		"@vitest/coverage-v8": "4.0.16",
+		"jsdom": "27.4.0",
+		"stylelint": "16.26.1",
+		"stylelint-value-no-unknown-custom-properties": "6.1.0",
+		"tsx": "4.21.0",
+		"typescript": "5.9.3",
+		"vite": "7.3.1",
+		"vite-plugin-solid": "2.11.10",
+		"vitest": "4.0.16"
+	}
+}
