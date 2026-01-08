@@ -1,12 +1,12 @@
 import { createRoot } from "solid-js";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { ReactivityEvent } from "../types";
+import type { ReactivityEvent } from "../../types";
 import {
 	createTrackedEffect,
 	createTrackedMemo,
 	createTrackedSignal,
-} from "./primitives";
-import { tracker } from "./tracker";
+} from "../primitives";
+import { tracker } from "../tracker";
 
 describe("createTrackedSignal", () => {
 	beforeEach(() => {

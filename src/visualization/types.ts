@@ -6,12 +6,7 @@
  * They wrap/extend the instrumentation layer types for D3 force simulation.
  */
 
-import type {
-	EdgeType,
-	NodeType,
-	ReactiveEdge,
-	ReactiveNode,
-} from "../../../src/types";
+import type { EdgeType, NodeType, ReactiveEdge, ReactiveNode } from "../types";
 
 // =============================================================================
 // Graph Node Types

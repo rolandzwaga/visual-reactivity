@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { ReactivityEvent } from "../types";
-import { tracker } from "./tracker";
+import type { ReactivityEvent } from "../../types";
+import { tracker } from "../tracker";
 
 describe("Event Emission", () => {
 	beforeEach(() => {
