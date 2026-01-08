@@ -9,6 +9,9 @@
 				"noNoninteractiveElementToInteractiveRole": "off",
 				"noStaticElementInteractions": "off",
 				"noSvgWithoutTitle": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
 			}
 		}
 	},

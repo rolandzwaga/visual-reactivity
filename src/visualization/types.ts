@@ -136,6 +136,16 @@ export interface NodeShapeProps {
 	onMouseEnter: (nodeId: string) => void;
 	/** Callback when mouse leaves node */
 	onMouseLeave: () => void;
+	/** Animation visual state */
+	pulseScale?: number;
+	/** Stale state indicator */
+	isStale?: boolean;
+	/** Executing state indicator */
+	isExecuting?: boolean;
+	/** Highlight opacity for execution feedback */
+	highlightOpacity?: number;
+	/** Disposal progress (0-1) */
+	disposeProgress?: number;
 }
 
 // =============================================================================

@@ -8,6 +8,7 @@ import {
 	onMount,
 	Show,
 } from "solid-js";
+import { createAnimationController } from "../animation";
 import { tracker } from "../instrumentation";
 import type { SubscriptionAddData, SubscriptionRemoveData } from "../types";
 import { useForceSimulation, useGraphState } from "./hooks";
@@ -38,6 +39,8 @@ export function DependencyGraph(props: DependencyGraphProps) {
 		},
 	);
 
+	const animationController = createAnimationController();
+
 	const [transform, setTransform] = createSignal<ZoomTransform>({
 		k: 1,
 		x: 0,
@@ -65,16 +68,43 @@ export function DependencyGraph(props: DependencyGraphProps) {
 					}
 					break;
 				}
+				case "signal-write": {
+					animationController.animateSignalWrite(event.nodeId);
+					const outgoingEdges = state.edges().filter((edge) => {
+						const sourceId =
+							typeof edge.source === "string" ? edge.source : edge.source.id;
+						return sourceId === event.nodeId;
+					});
+					for (const edge of outgoingEdges) {
+						const sourceId =
+							typeof edge.source === "string" ? edge.source : edge.source.id;
+						const targetId =
+							typeof edge.target === "string" ? edge.target : edge.target.id;
+						animationController.animateEdgeParticle(`${sourceId}->${targetId}`);
+					}
+					break;
+				}
+				case "computation-execute-start":
+					animationController.animateExecutionStart(event.nodeId);
+					break;
+				case "computation-execute-end":
+					animationController.animateExecutionEnd(event.nodeId);
+					break;
 				case "computation-dispose":
+					animationController.animateDisposal(event.nodeId);
 					state.removeNode(event.nodeId);
 					break;
 				case "subscription-add": {
 					const data = event.data as SubscriptionAddData;
+					const edgeId = `${data.sourceId}->${event.nodeId}`;
 					state.addEdge(data.sourceId, event.nodeId, "dependency");
+					animationController.animateEdgeAdd(edgeId);
 					break;
 				}
 				case "subscription-remove": {
 					const data = event.data as SubscriptionRemoveData;
+					const edgeId = `${data.sourceId}->${event.nodeId}`;
+					animationController.animateEdgeRemove(edgeId);
 					state.removeEdge(data.sourceId, event.nodeId);
 					break;
 				}
@@ -98,7 +128,10 @@ export function DependencyGraph(props: DependencyGraphProps) {
 			select<SVGSVGElement, unknown>(svgRef).call(zoomBehavior);
 		}
 
-		onCleanup(() => unsubscribe());
+		onCleanup(() => {
+			unsubscribe();
+			animationController.dispose();
+		});
 	});
 
 	const nodePositions = createMemo(() => {
@@ -221,6 +254,8 @@ export function DependencyGraph(props: DependencyGraphProps) {
 			const hId = hoveredId();
 			return hId === node.id || (hId !== null && isNodeConnected(node.id, hId));
 		};
+		const visualStateGetter = animationController.getNodeVisualState(node.id);
+		const visualState = () => visualStateGetter();
 
 		switch (node.type) {
 			case "signal":
@@ -232,6 +267,11 @@ export function DependencyGraph(props: DependencyGraphProps) {
 						onClick={handleNodeClick}
 						onMouseEnter={handleNodeMouseEnter}
 						onMouseLeave={handleNodeMouseLeave}
+						pulseScale={visualState().pulseScale}
+						isStale={visualState().isStale}
+						isExecuting={visualState().isExecuting}
+						highlightOpacity={visualState().highlightOpacity}
+						disposeProgress={visualState().disposeProgress}
 					/>
 				);
 			case "memo":
@@ -243,6 +283,11 @@ export function DependencyGraph(props: DependencyGraphProps) {
 						onClick={handleNodeClick}
 						onMouseEnter={handleNodeMouseEnter}
 						onMouseLeave={handleNodeMouseLeave}
+						pulseScale={visualState().pulseScale}
+						isStale={visualState().isStale}
+						isExecuting={visualState().isExecuting}
+						highlightOpacity={visualState().highlightOpacity}
+						disposeProgress={visualState().disposeProgress}
 					/>
 				);
 			case "effect":
@@ -254,6 +299,11 @@ export function DependencyGraph(props: DependencyGraphProps) {
 						onClick={handleNodeClick}
 						onMouseEnter={handleNodeMouseEnter}
 						onMouseLeave={handleNodeMouseLeave}
+						pulseScale={visualState().pulseScale}
+						isStale={visualState().isStale}
+						isExecuting={visualState().isExecuting}
+						highlightOpacity={visualState().highlightOpacity}
+						disposeProgress={visualState().disposeProgress}
 					/>
 				);
 			default:
@@ -301,31 +351,76 @@ export function DependencyGraph(props: DependencyGraphProps) {
 						fill={EDGE_STYLES.dependency.stroke}
 					/>
 				</marker>
+				<filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+					<feGaussianBlur stdDeviation="3" result="coloredBlur" />
+					<feMerge>
+						<feMergeNode in="coloredBlur" />
+						<feMergeNode in="SourceGraphic" />
+					</feMerge>
+				</filter>
 			</defs>
 
 			<g transform={transformStyle()}>
 				<g class="edges">
 					<For each={edgesWithPositions()}>
-						{(edge) => (
-							<line
-								x1={edge.x1}
-								y1={edge.y1}
-								x2={edge.x2}
-								y2={edge.y2}
-								stroke={EDGE_STYLES.dependency.stroke}
-								stroke-width={
-									isEdgeConnectedToHovered(edge)
-										? EDGE_STYLES.dependency.strokeWidth + 1
-										: EDGE_STYLES.dependency.strokeWidth
-								}
-								stroke-opacity={
-									state.hoveredNodeId() && !isEdgeConnectedToHovered(edge)
-										? 0.3
-										: 1
-								}
-								marker-end="url(#arrowhead)"
-							/>
-						)}
+						{(edge) => {
+							const sourceId =
+								typeof edge.source === "string" ? edge.source : edge.source.id;
+							const targetId =
+								typeof edge.target === "string" ? edge.target : edge.target.id;
+							const edgeId = `${sourceId}->${targetId}`;
+							const visualStateGetter =
+								animationController.getEdgeVisualState(edgeId);
+							const visualState = () => visualStateGetter();
+							const particleProgress = () => visualState().particleProgress;
+							const addProgress = () => visualState().addProgress;
+							const removeProgress = () => visualState().removeProgress;
+
+							const particleX = () => {
+								const progress = particleProgress();
+								if (progress === null) return 0;
+								return edge.x1 + (edge.x2 - edge.x1) * progress;
+							};
+							const particleY = () => {
+								const progress = particleProgress();
+								if (progress === null) return 0;
+								return edge.y1 + (edge.y2 - edge.y1) * progress;
+							};
+
+							return (
+								<>
+									<line
+										x1={edge.x1}
+										y1={edge.y1}
+										x2={edge.x2}
+										y2={edge.y2}
+										stroke={EDGE_STYLES.dependency.stroke}
+										stroke-width={
+											isEdgeConnectedToHovered(edge)
+												? EDGE_STYLES.dependency.strokeWidth + 1
+												: EDGE_STYLES.dependency.strokeWidth
+										}
+										stroke-opacity={
+											(state.hoveredNodeId() && !isEdgeConnectedToHovered(edge)
+												? 0.3
+												: 1) *
+											(1 - removeProgress()) *
+											addProgress()
+										}
+										marker-end="url(#arrowhead)"
+									/>
+									{particleProgress() !== null && (
+										<circle
+											cx={particleX()}
+											cy={particleY()}
+											r={5}
+											fill="#fbbf24"
+											filter="url(#glow)"
+										/>
+									)}
+								</>
+							);
+						}}
 					</For>
 				</g>
 
