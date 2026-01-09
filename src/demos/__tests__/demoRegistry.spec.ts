@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("demoRegistry", () => {
 	it("DEMO_REGISTRY is an object with string keys", async () => {
@@ -26,7 +26,7 @@ describe("demoRegistry", () => {
 			const demo = DEMO_REGISTRY[firstId];
 
 			expect(demo).toBeDefined();
-			expect(demo.id).toBe(firstId);
+			expect(demo.metadata.id).toBe(firstId);
 		}
 	});
 
@@ -34,18 +34,19 @@ describe("demoRegistry", () => {
 		const { DEMO_LIST } = await import("../demoRegistry");
 
 		DEMO_LIST.forEach((demo) => {
-			expect(demo).toHaveProperty("id");
 			expect(demo).toHaveProperty("metadata");
-			expect(demo).toHaveProperty("render");
-			expect(typeof demo.id).toBe("string");
-			expect(typeof demo.render).toBe("function");
+			expect(demo).toHaveProperty("component");
+			expect(demo).toHaveProperty("setup");
+			expect(typeof demo.metadata.id).toBe("string");
+			expect(typeof demo.component).toBe("function");
+			expect(typeof demo.setup).toBe("function");
 		});
 	});
 
 	it("all demo IDs are unique", async () => {
 		const { DEMO_LIST } = await import("../demoRegistry");
 
-		const ids = DEMO_LIST.map((demo) => demo.id);
+		const ids = DEMO_LIST.map((demo) => demo.metadata.id);
 		const uniqueIds = new Set(ids);
 
 		expect(uniqueIds.size).toBe(ids.length);

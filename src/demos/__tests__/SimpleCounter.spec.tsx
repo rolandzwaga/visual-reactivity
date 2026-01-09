@@ -1,9 +1,14 @@
 import { render, screen } from "@solidjs/testing-library";
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test } from "vitest";
 import { tracker } from "../../instrumentation";
 import { SimpleCounter } from "../SimpleCounter";
 
 describe("SimpleCounter Demo", () => {
+	afterEach(() => {
+		tracker.reset();
+		document.body.innerHTML = "";
+	});
+
 	test("creates 1 signal and 1 effect", () => {
 		tracker.reset();
 

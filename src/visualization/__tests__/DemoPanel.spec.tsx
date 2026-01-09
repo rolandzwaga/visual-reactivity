@@ -1,11 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@solidjs/testing-library";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { testInRoot } from "../../__tests__/helpers";
 
 describe("DemoPanel", () => {
+	afterEach(() => {
+		document.body.innerHTML = "";
+	});
+
 	const mockDemo = {
 		id: "test-demo",
 		metadata: {
+			id: "test-demo",
 			name: "Test Demo",
 			concept: "Test Concept",
 			description: "Test description for the demo",
@@ -21,16 +26,18 @@ describe("DemoPanel", () => {
 
 		testInRoot(() => {
 			render(() => (
-				<DemoPanel demo={mockDemo} onClose={onClose} onReset={onReset}>
+				<DemoPanel
+					metadata={mockDemo.metadata}
+					onClose={onClose}
+					onReset={onReset}
+				>
 					<div>Test Children</div>
 				</DemoPanel>
 			));
 
-			expect(screen.getByText("Test Demo")).toBeInTheDocument();
-			expect(
-				screen.getByText("Test description for the demo"),
-			).toBeInTheDocument();
-			expect(screen.getByText("Test Children")).toBeInTheDocument();
+			expect(screen.getByText("Test Demo")).toBeTruthy();
+			expect(screen.getByText(/Click buttons to interact/)).toBeTruthy();
+			expect(screen.getByText("Test Children")).toBeTruthy();
 		});
 	});
 
@@ -41,7 +48,7 @@ describe("DemoPanel", () => {
 
 		testInRoot(() => {
 			const { container } = render(() => (
-				<DemoPanel demo={null} onClose={onClose} onReset={onReset}>
+				<DemoPanel metadata={null} onClose={onClose} onReset={onReset}>
 					<div>Test Children</div>
 				</DemoPanel>
 			));
@@ -57,12 +64,16 @@ describe("DemoPanel", () => {
 
 		testInRoot(() => {
 			render(() => (
-				<DemoPanel demo={mockDemo} onClose={onClose} onReset={onReset}>
+				<DemoPanel
+					metadata={mockDemo.metadata}
+					onClose={onClose}
+					onReset={onReset}
+				>
 					<div>Test Children</div>
 				</DemoPanel>
 			));
 
-			const closeButton = screen.getByRole("button", { name: /close|×/i });
+			const closeButton = screen.getByTestId("demo-panel-close");
 			fireEvent.click(closeButton);
 
 			expect(onClose).toHaveBeenCalledTimes(1);
@@ -76,12 +87,16 @@ describe("DemoPanel", () => {
 
 		testInRoot(() => {
 			render(() => (
-				<DemoPanel demo={mockDemo} onClose={onClose} onReset={onReset}>
+				<DemoPanel
+					metadata={mockDemo.metadata}
+					onClose={onClose}
+					onReset={onReset}
+				>
 					<div>Test Children</div>
 				</DemoPanel>
 			));
 
-			const resetButton = screen.getByRole("button", { name: /reset/i });
+			const resetButton = screen.getByTestId("demo-panel-reset");
 			fireEvent.click(resetButton);
 
 			expect(onReset).toHaveBeenCalledTimes(1);
@@ -95,16 +110,18 @@ describe("DemoPanel", () => {
 
 		testInRoot(() => {
 			render(() => (
-				<DemoPanel demo={mockDemo} onClose={onClose} onReset={onReset}>
+				<DemoPanel
+					metadata={mockDemo.metadata}
+					onClose={onClose}
+					onReset={onReset}
+				>
 					<div>Test Children</div>
 				</DemoPanel>
 			));
 
-			expect(screen.getByText("Test Demo")).toBeInTheDocument();
-			expect(
-				screen.getByText(/Test description for the demo/),
-			).toBeInTheDocument();
-			expect(screen.getByText(/Click buttons to interact/)).toBeInTheDocument();
+			expect(screen.getByText("Test Demo")).toBeTruthy();
+			expect(screen.getByText("Test Concept")).toBeTruthy();
+			expect(screen.getByText(/Click buttons to interact/)).toBeTruthy();
 		});
 	});
 });

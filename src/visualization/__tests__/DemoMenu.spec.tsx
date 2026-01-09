@@ -1,28 +1,33 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@solidjs/testing-library";
+import { fireEvent, render, screen } from "@solidjs/testing-library";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
 
 describe("DemoMenu", () => {
+	afterEach(() => {
+		document.body.innerHTML = "";
+	});
 	const mockDemos = [
 		{
-			id: "test-demo-1",
 			metadata: {
+				id: "test-demo-1",
 				name: "Test Demo 1",
 				concept: "Test Concept 1",
 				description: "Test description 1",
 				instructions: "Test instructions 1",
 			},
-			render: () => <div>Demo 1</div>,
+			component: () => <div>Demo 1</div>,
+			setup: () => ({ dispose: () => {} }),
 		},
 		{
-			id: "test-demo-2",
 			metadata: {
+				id: "test-demo-2",
 				name: "Test Demo 2",
 				concept: "Test Concept 2",
 				description: "Test description 2",
 				instructions: "Test instructions 2",
 			},
-			render: () => <div>Demo 2</div>,
+			component: () => <div>Demo 2</div>,
+			setup: () => ({ dispose: () => {} }),
 		},
 	];
 
@@ -34,16 +39,16 @@ describe("DemoMenu", () => {
 		testInRoot(() => {
 			render(() => (
 				<DemoMenu
-					open={true}
+					isOpen={true}
 					onClose={onClose}
 					demos={mockDemos}
-					currentDemoId={null}
-					onSelectDemo={onSelectDemo}
+					activeDemoId={null}
+					onSelect={onSelectDemo}
 				/>
 			));
 
-			expect(screen.getByText("Test Demo 1")).toBeInTheDocument();
-			expect(screen.getByText("Test Demo 2")).toBeInTheDocument();
+			expect(screen.getByText("Test Demo 1")).toBeTruthy();
+			expect(screen.getByText("Test Demo 2")).toBeTruthy();
 		});
 	});
 
@@ -55,11 +60,11 @@ describe("DemoMenu", () => {
 		testInRoot(() => {
 			const { container } = render(() => (
 				<DemoMenu
-					open={false}
+					isOpen={false}
 					onClose={onClose}
 					demos={mockDemos}
-					currentDemoId={null}
-					onSelectDemo={onSelectDemo}
+					activeDemoId={null}
+					onSelect={onSelectDemo}
 				/>
 			));
 
@@ -75,11 +80,11 @@ describe("DemoMenu", () => {
 		testInRoot(() => {
 			render(() => (
 				<DemoMenu
-					open={true}
+					isOpen={true}
 					onClose={onClose}
 					demos={mockDemos}
-					currentDemoId={null}
-					onSelectDemo={onSelectDemo}
+					activeDemoId={null}
+					onSelect={onSelectDemo}
 				/>
 			));
 
@@ -98,16 +103,16 @@ describe("DemoMenu", () => {
 		testInRoot(() => {
 			render(() => (
 				<DemoMenu
-					open={true}
+					isOpen={true}
 					onClose={onClose}
 					demos={mockDemos}
-					currentDemoId={null}
-					onSelectDemo={onSelectDemo}
+					activeDemoId={null}
+					onSelect={onSelectDemo}
 				/>
 			));
 
-			const demo1 = screen.getByText("Test Demo 1");
-			fireEvent.click(demo1);
+			const demo1Button = screen.getByTestId("demo-item-0");
+			fireEvent.click(demo1Button);
 
 			expect(onSelectDemo).toHaveBeenCalledWith("test-demo-1");
 		});
@@ -121,16 +126,16 @@ describe("DemoMenu", () => {
 		testInRoot(() => {
 			render(() => (
 				<DemoMenu
-					open={true}
+					isOpen={true}
 					onClose={onClose}
 					demos={mockDemos}
-					currentDemoId={"test-demo-1"}
-					onSelectDemo={onSelectDemo}
+					activeDemoId={"test-demo-1"}
+					onSelect={onSelectDemo}
 				/>
 			));
 
-			const demo1Element = screen.getByText("Test Demo 1").closest("button");
-			expect(demo1Element).toHaveClass(/active|selected/);
+			const demo1Button = screen.getByTestId("demo-item-0");
+			expect(demo1Button.classList.toString()).toMatch(/active/);
 		});
 	});
 });

@@ -1,9 +1,14 @@
 import { render, screen } from "@solidjs/testing-library";
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test } from "vitest";
 import { tracker } from "../../instrumentation";
 import { DerivedState } from "../DerivedState";
 
 describe("DerivedState Demo", () => {
+	afterEach(() => {
+		tracker.reset();
+		document.body.innerHTML = "";
+	});
+
 	test("creates signal, memo, and effect", () => {
 		tracker.reset();
 

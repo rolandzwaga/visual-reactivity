@@ -1,8 +1,11 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@solidjs/testing-library";
+import { fireEvent, render, screen } from "@solidjs/testing-library";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
 
 describe("WelcomeMessage", () => {
+	afterEach(() => {
+		document.body.innerHTML = "";
+	});
 	it("renders welcome message prompting to open demo menu", async () => {
 		const { WelcomeMessage } = await import("../WelcomeMessage");
 		const onOpenMenu = vi.fn();
@@ -10,8 +13,8 @@ describe("WelcomeMessage", () => {
 		testInRoot(() => {
 			render(() => <WelcomeMessage onOpenMenu={onOpenMenu} />);
 
-			expect(screen.getByText(/demo/i)).toBeInTheDocument();
-			expect(screen.getByText(/explore/i)).toBeInTheDocument();
+			expect(screen.getByText("Welcome to Visual Reactivity")).toBeTruthy();
+			expect(screen.getByText(/explore interactive demos/i)).toBeTruthy();
 		});
 	});
 
@@ -23,7 +26,7 @@ describe("WelcomeMessage", () => {
 			render(() => <WelcomeMessage onOpenMenu={onOpenMenu} />);
 
 			const button = screen.getByRole("button");
-			expect(button).toBeInTheDocument();
+			expect(button).toBeTruthy();
 		});
 	});
 
@@ -34,7 +37,7 @@ describe("WelcomeMessage", () => {
 		testInRoot(() => {
 			render(() => <WelcomeMessage onOpenMenu={onOpenMenu} />);
 
-			const button = screen.getByRole("button");
+			const button = screen.getByTestId("welcome-open-menu");
 			fireEvent.click(button);
 
 			expect(onOpenMenu).toHaveBeenCalledTimes(1);
@@ -48,7 +51,7 @@ describe("WelcomeMessage", () => {
 		testInRoot(() => {
 			render(() => <WelcomeMessage onOpenMenu={onOpenMenu} />);
 
-			const button = screen.getByRole("button");
+			const button = screen.getByTestId("welcome-open-menu");
 			expect(button.textContent).toMatch(/demo|open|explore|start/i);
 		});
 	});

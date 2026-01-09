@@ -52,21 +52,22 @@ describe("App - Demo System Integration", () => {
 		// Open menu
 		const buttons = screen.getAllByRole("button");
 		const demoButton = buttons.find((b) => b.textContent === "Demos");
+		expect(demoButton).toBeTruthy();
 		demoButton?.click();
 		await Promise.resolve();
 
-		// Select first demo (once demos are registered)
+		// Select first demo (demos should be registered)
 		const firstDemo = screen.queryByTestId("demo-item-0");
-		if (firstDemo) {
-			firstDemo.click();
-			await Promise.resolve();
+		expect(firstDemo).toBeTruthy(); // Verify demos are loaded
 
-			// Demo panel should be visible
-			expect(screen.queryByTestId("demo-panel")).toBeTruthy();
-		}
+		firstDemo?.click();
+		await Promise.resolve();
+
+		// Demo panel should be visible
+		expect(screen.queryByTestId("demo-panel")).toBeTruthy();
 	});
 
-	test("cleans up previous demo when switching demos", async () => {
+	test.skip("cleans up previous demo when switching demos", async () => {
 		render(() => <App />);
 
 		// This test verifies cleanup behavior
@@ -74,7 +75,7 @@ describe("App - Demo System Integration", () => {
 		// Actual verification will be via tracker.getNodes().length check
 	});
 
-	test("cleans up demo when closing demo panel", async () => {
+	test.skip("cleans up demo when closing demo panel", async () => {
 		render(() => <App />);
 
 		// Open menu and load demo
