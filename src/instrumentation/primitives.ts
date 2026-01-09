@@ -119,7 +119,23 @@ export function createTrackedMemo<T>(
 		options?.equals !== undefined ? { equals: options.equals } : undefined,
 	);
 
-	return memo;
+	const trackMemoRead = (() => {
+		const value = memo();
+
+		if (currentComputation && currentComputation !== nodeId) {
+			const edgeId = `${nodeId}->${currentComputation}`;
+			if (!tracker.getEdges().has(edgeId)) {
+				tracker.addEdge("dependency", nodeId, currentComputation);
+				tracker.emit("subscription-add", currentComputation, {
+					sourceId: nodeId,
+				});
+			}
+		}
+
+		return value;
+	}) as Accessor<T>;
+
+	return trackMemoRead;
 }
 
 export interface TrackedEffectOptions {
