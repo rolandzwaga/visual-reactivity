@@ -1,0 +1,93 @@
+:root {
+	/* Primary colors */
+	--color-primary: #3b82f6;
+	--color-primary-hover: #3b82f6;
+
+	/* Background colors */
+	--color-bg-primary: #ffffff;
+	--color-bg-secondary: #f9fafb;
+	--color-bg-tertiary: rgba(0, 0, 0, 0.05);
+	--color-bg-hover: #f3f4f6;
+	--color-bg-selected: rgba(59, 130, 246, 0.1);
+
+	/* Text colors */
+	--color-text-primary: #1f2937;
+	--color-text-secondary: #6b7280;
+	--color-text-tertiary: #9ca3af;
+	--color-text-white: #ffffff;
+
+	/* Border colors */
+	--color-border: #d1d5db;
+	--color-border-light: #e5e7eb;
+
+	/* Gray scale */
+	--color-gray-50: #f9fafb;
+	--color-gray-100: #f3f4f6;
+	--color-gray-200: #e5e7eb;
+	--color-gray-300: #d1d5db;
+	--color-gray-400: #9ca3af;
+	--color-gray-500: #6b7280;
+	--color-gray-600: #4b5563;
+	--color-gray-700: #374151;
+	--color-gray-800: #1f2937;
+
+	/* Status colors */
+	--color-error: #ef4444;
+	--color-error-hover: #dc2626;
+	--color-error-border: #dc2626;
+
+	/* Shadow colors */
+	--shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+	--shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--shadow-panel: -2px 0 8px rgba(0, 0, 0, 0.1);
+
+	/* Overlay colors */
+	--color-overlay: rgba(0, 0, 0, 0.5);
+
+	/* Spacing */
+	--spacing-xs: 4px;
+	--spacing-sm: 8px;
+	--spacing-md: 12px;
+	--spacing-lg: 16px;
+	--spacing-xl: 24px;
+	--spacing-2xl: 48px;
+
+	/* Border radius */
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+
+	/* Font sizes */
+	--font-size-xs: 10px;
+	--font-size-sm: 11px;
+	--font-size-base: 12px;
+	--font-size-md: 13px;
+	--font-size-lg: 14px;
+	--font-size-xl: 18px;
+	--font-size-2xl: 20px;
+	--font-size-3xl: 24px;
+
+	/* Font weights */
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+
+	/* Z-index layers */
+	--z-dialog: 1000;
+	--z-notification: 1001;
+
+	/* Transitions */
+	--transition-fast: 0.15s ease;
+	--transition-base: 0.2s ease;
+	--transition-slow: 0.3s ease;
+
+	/* Opacity */
+	--opacity-disabled: 0.5;
+	--opacity-muted: 0.7;
+	--opacity-semi: 0.8;
+
+	/* Border widths */
+	--border-width-thin: 1px;
+	--border-width-medium: 2px;
+	--border-width-thick: 3px;
+}

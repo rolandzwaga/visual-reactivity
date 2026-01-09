@@ -1,10 +1,13 @@
 import { createSignal, Show } from "solid-js";
 import { tracker } from "./instrumentation";
-import { DependencyGraph, DetailPanel } from "./visualization";
+import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import type { DetailPanelData } from "./visualization/types";
+
+type ViewMode = "graph" | "tree";
 
 export function App() {
 	const [selectedNodeId, setSelectedNodeId] = createSignal<string | null>(null);
+	const [viewMode, setViewMode] = createSignal<ViewMode>("graph");
 
 	const getDetailPanelData = (): DetailPanelData | null => {
 		const nodeId = selectedNodeId();
@@ -26,7 +29,64 @@ export function App() {
 
 	return (
 		<div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-			<DependencyGraph width={window.innerWidth} height={window.innerHeight} />
+			<div
+				style={{
+					position: "absolute",
+					top: "16px",
+					right: "16px",
+					"z-index": "100",
+					display: "flex",
+					gap: "8px",
+				}}
+			>
+				<button
+					type="button"
+					onClick={() => setViewMode("graph")}
+					style={{
+						padding: "8px 16px",
+						background: viewMode() === "graph" ? "#3b82f6" : "white",
+						color: viewMode() === "graph" ? "white" : "#1f2937",
+						border: "1px solid #d1d5db",
+						"border-radius": "6px",
+						cursor: "pointer",
+						"font-weight": "500",
+					}}
+				>
+					Dependency Graph
+				</button>
+				<button
+					type="button"
+					onClick={() => setViewMode("tree")}
+					style={{
+						padding: "8px 16px",
+						background: viewMode() === "tree" ? "#3b82f6" : "white",
+						color: viewMode() === "tree" ? "white" : "#1f2937",
+						border: "1px solid #d1d5db",
+						"border-radius": "6px",
+						cursor: "pointer",
+						"font-weight": "500",
+					}}
+				>
+					Ownership Tree
+				</button>
+			</div>
+
+			<Show when={viewMode() === "graph"}>
+				<DependencyGraph
+					width={window.innerWidth}
+					height={window.innerHeight}
+				/>
+			</Show>
+
+			<Show when={viewMode() === "tree"}>
+				<OwnershipTree
+					width={window.innerWidth}
+					height={window.innerHeight}
+					selectedNodeId={selectedNodeId()}
+					onSelectNode={setSelectedNodeId}
+				/>
+			</Show>
+
 			<Show when={getDetailPanelData()}>
 				{(data) => (
 					<DetailPanel data={data()} onClose={() => setSelectedNodeId(null)} />

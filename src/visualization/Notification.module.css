@@ -1,0 +1,52 @@
+.notification {
+	position: fixed;
+	bottom: var(--spacing-xl);
+	right: var(--spacing-xl);
+	background: var(--color-gray-800);
+	color: var(--color-text-white);
+	padding: var(--spacing-md) var(--spacing-lg);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-lg);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	z-index: var(--z-notification);
+	animation: slideIn var(--transition-slow);
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateX(400px);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+.message {
+	font-size: var(--font-size-lg);
+	line-height: 1.5;
+}
+
+.closeButton {
+	background: transparent;
+	border: none;
+	color: var(--color-text-white);
+	font-size: var(--font-size-3xl);
+	line-height: 1;
+	cursor: pointer;
+	padding: 0;
+	width: var(--spacing-xl);
+	height: var(--spacing-xl);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: var(--opacity-muted);
+	transition: opacity var(--transition-base);
+}
+
+.closeButton:hover {
+	opacity: 1;
+}

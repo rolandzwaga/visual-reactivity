@@ -1,5 +1,6 @@
 export { DependencyGraph } from "./DependencyGraph";
 export { DetailPanel } from "./DetailPanel";
+export { OwnershipTree } from "./OwnershipTree";
 export type {
 	DependencyGraphProps,
 	DetailPanelData,
