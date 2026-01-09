@@ -1,6 +1,6 @@
-import { createRoot } from "solid-js";
 import { describe, expect, it } from "vitest";
 import { testInRoot } from "../../../__tests__/helpers";
+import type { ReactiveNode } from "../../../types/nodes";
 import { useTimelineLayout } from "../useTimelineLayout";
 
 describe("useTimelineLayout", () => {
@@ -20,9 +20,39 @@ describe("useTimelineLayout", () => {
 
 	it("calculates swimlanes for nodes", () => {
 		testInRoot(() => {
-			const nodes = [
-				{ id: "node1", type: "signal" as const, name: "count" },
-				{ id: "node2", type: "memo" as const, name: "doubled" },
+			const nodes: ReactiveNode[] = [
+				{
+					id: "node1",
+					type: "signal" as const,
+					name: "count",
+					value: 0,
+					isStale: false,
+					isExecuting: false,
+					executionCount: 0,
+					createdAt: Date.now(),
+					lastExecutedAt: null,
+					disposedAt: null,
+					sources: [],
+					observers: [],
+					owner: null,
+					owned: [],
+				},
+				{
+					id: "node2",
+					type: "memo" as const,
+					name: "doubled",
+					value: 0,
+					isStale: false,
+					isExecuting: false,
+					executionCount: 0,
+					createdAt: Date.now(),
+					lastExecutedAt: null,
+					disposedAt: null,
+					sources: [],
+					observers: [],
+					owner: null,
+					owned: [],
+				},
 			];
 
 			const layout = useTimelineLayout({

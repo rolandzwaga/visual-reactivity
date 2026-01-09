@@ -17,7 +17,7 @@ describe("eventDensityAnalyzer", () => {
 		type: "signal-write",
 		timestamp,
 		nodeId,
-		data: { value: 1, prevValue: 0 },
+		data: { value: 1 as never, prevValue: 0 as never },
 		batchId: null,
 	});
 

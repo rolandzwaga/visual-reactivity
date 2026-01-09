@@ -10,9 +10,9 @@ import { tracker } from "../instrumentation";
 import { batchEvents } from "../lib/eventBatcher";
 import type { EventType, ReactivityEvent } from "../types/events";
 import type {
-	FilterState,
 	PlaybackState,
 	TimelineEvent,
+	TimelineFilter,
 	TimelineViewProps,
 } from "../types/timeline";
 import { useTimelineLayout } from "./hooks/useTimelineLayout";
@@ -35,7 +35,7 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 	);
 	const [tooltipPos, setTooltipPos] = createSignal({ x: 0, y: 0 });
 	const [cursorTime, setCursorTime] = createSignal<number | null>(null);
-	const [filter, setFilter] = createSignal<FilterState>({
+	const [filter, setFilter] = createSignal<TimelineFilter>({
 		enabledEventTypes: new Set<EventType>([
 			"signal-read",
 			"signal-write",
@@ -197,7 +197,11 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 			}}
 		>
 			<div style={{ display: "flex", gap: "1rem", padding: "0.5rem" }}>
-				<TimelineFilters filter={filter()} onChange={setFilter} />
+				<TimelineFilters
+					filter={filter()}
+					availableNodes={nodes()}
+					onChange={setFilter}
+				/>
 				<PlaybackControls
 					playback={playback()}
 					onPlay={handlePlay}

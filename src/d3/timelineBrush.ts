@@ -1,6 +1,5 @@
 import type { BrushBehavior } from "d3-brush";
 import { brushX } from "d3-brush";
-import type { Selection } from "d3-selection";
 
 export interface TimelineBrushOptions {
 	width: number;

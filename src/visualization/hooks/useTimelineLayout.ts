@@ -52,7 +52,9 @@ export function useTimelineLayout(props: UseTimelineLayoutProps) {
 			height: yScale.bandwidth(),
 			isDisposed: false,
 			disposalTime: null,
-			color: NODE_COLORS[node.type] ?? NODE_COLORS.unknown,
+			color:
+				NODE_COLORS[node.type as keyof typeof NODE_COLORS] ??
+				NODE_COLORS.unknown,
 		}));
 	});
 

@@ -194,7 +194,7 @@ describe("createTrackedEffect", () => {
 			});
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			unsubscribe();
 
@@ -220,7 +220,7 @@ describe("createTrackedEffect", () => {
 			});
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edges = Array.from(tracker.getEdges().values());
 			const depEdges = edges.filter((e) => e.type === "dependency");
@@ -269,7 +269,7 @@ describe("createTrackedEffect", () => {
 			);
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edges = Array.from(tracker.getEdges().values());
 			const ownershipEdges = edges.filter((e) => e.type === "ownership");
@@ -302,7 +302,7 @@ describe("Edge Cases", () => {
 				{ name: "conditionalMemo" },
 			);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edgesBefore = Array.from(tracker.getEdges().values());
 			const conditionNodeId = Array.from(tracker.getNodes().values()).find(

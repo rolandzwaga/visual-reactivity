@@ -72,6 +72,7 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 						x2={props.scale.scale(batch.endTime)}
 						y={0}
 						height={props.swimlane.height}
+						isHovered={false}
 						batch={{
 							id: batch.batchId,
 							startTime: batch.startTime,

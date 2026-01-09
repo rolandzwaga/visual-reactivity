@@ -29,11 +29,11 @@ describe("Integration: Full Reactive Chain", () => {
 				{ name: "logger" },
 			);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			setCount(2);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const eventTypes = events.map((e) => e.type);
 
@@ -52,11 +52,11 @@ describe("Integration: Full Reactive Chain", () => {
 			const c = createTrackedMemo(() => a() + 2, { name: "c" });
 			createTrackedMemo(() => b() + c(), { name: "d" });
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			setA(10);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edges = Array.from(tracker.getEdges().values());
 			const depEdges = edges.filter((e) => e.type === "dependency");
@@ -87,7 +87,7 @@ describe("Integration: Full Reactive Chain", () => {
 				{ name: "conditional" },
 			);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edgesBefore = Array.from(tracker.getEdges().values());
 			const valueADepsBefore = edgesBefore.filter(
@@ -99,7 +99,7 @@ describe("Integration: Full Reactive Chain", () => {
 
 			setCondition(false);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 		});
 	});
 });

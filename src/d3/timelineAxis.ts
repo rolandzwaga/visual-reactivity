@@ -1,11 +1,11 @@
-import type { Axis } from "d3-axis";
+import type { Axis, AxisScale } from "d3-axis";
 import { axisBottom } from "d3-axis";
 import type { TimelineScale } from "../types/timeline";
 
 export function createTimelineAxis(
 	timelineScale: TimelineScale,
 ): Axis<Date | number> {
-	return axisBottom(timelineScale.scale)
+	return axisBottom(timelineScale.scale as AxisScale<Date | number>)
 		.ticks(5)
 		.tickFormat((d) => {
 			const date = new Date(d as number);

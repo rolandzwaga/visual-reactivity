@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
 import type { AnimationControllerOptions } from "../types";
 import { createAnimationController } from "../useAnimationController";

@@ -31,7 +31,7 @@ export function shouldCluster(
 export function clusterEvents(
 	events: TimelineEvent[],
 	nodeId: string,
-	scale: TimelineScale,
+	_scale: TimelineScale,
 ): EventCluster[] {
 	const nodeEvents = events
 		.filter((e) => e.nodeId === nodeId)
