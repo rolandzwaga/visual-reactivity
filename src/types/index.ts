@@ -18,6 +18,21 @@ export { createReactivityEvent } from "./events";
 export type { NodeType, ReactiveNode } from "./nodes";
 export { createReactiveNode } from "./nodes";
 export type {
+	DeepChainMetadata,
+	DiamondPatternMetadata,
+	HighSubscriptionsMetadata,
+	HotPathMetadata,
+	MetricsSummary,
+	OrphanedEffectMetadata,
+	Pattern,
+	PatternException,
+	PatternThreshold,
+	PatternType,
+	Severity,
+	StaleMemoMetadata,
+} from "./pattern";
+export { DEFAULT_THRESHOLDS, SEVERITY_COLORS } from "./pattern";
+export type {
 	BatchClickCallback,
 	CursorMoveCallback,
 	CursorSnapOptions,
