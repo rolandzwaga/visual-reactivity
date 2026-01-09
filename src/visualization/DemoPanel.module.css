@@ -1,0 +1,96 @@
+.panel {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 250px;
+	background: var(--color-bg-primary);
+	border-top: var(--border-width-thin) solid var(--color-border);
+	box-shadow: var(--shadow-md);
+	display: flex;
+	flex-direction: column;
+	z-index: 50;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: var(--spacing-lg);
+	border-bottom: var(--border-width-thin) solid var(--color-border);
+}
+
+.headerContent {
+	flex: 1;
+}
+
+.title {
+	margin: 0 0 var(--spacing-xs) 0;
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-text-primary);
+}
+
+.concept {
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary);
+}
+
+.headerActions {
+	display: flex;
+	gap: var(--spacing-sm);
+	align-items: center;
+}
+
+.resetButton {
+	padding: var(--spacing-sm) var(--spacing-md);
+	background: var(--color-gray-100);
+	border: var(--border-width-thin) solid var(--color-border);
+	border-radius: var(--radius-md);
+	color: var(--color-gray-700);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	cursor: pointer;
+	transition: all var(--transition-base);
+}
+
+.resetButton:hover {
+	background: var(--color-border-light);
+}
+
+.closeButton {
+	background: transparent;
+	border: none;
+	font-size: var(--font-size-3xl);
+	color: var(--color-gray-500);
+	cursor: pointer;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--radius-md);
+	transition: all var(--transition-base);
+}
+
+.closeButton:hover {
+	background: var(--color-gray-100);
+	color: var(--color-gray-700);
+}
+
+.instructions {
+	padding: var(--spacing-md) var(--spacing-lg);
+	background: var(--color-bg-secondary);
+	border-bottom: var(--border-width-thin) solid var(--color-border);
+	font-size: var(--font-size-md);
+	color: var(--color-gray-600);
+	line-height: 1.5;
+}
+
+.content {
+	flex: 1;
+	padding: var(--spacing-lg);
+	overflow-y: auto;
+}

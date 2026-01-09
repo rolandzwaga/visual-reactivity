@@ -24,7 +24,7 @@ Project structure: `src/` at repository root (single SolidJS web application)
 **Purpose**: Project structure initialization (minimal - most structure already exists)
 
 - [x] T001 Create demo module directories: `src/demos/`, `src/demos/__tests__/`, `src/visualization/__tests__/` for demo components
-- [ ] T002 **Commit project setup** (Constitution Principle XXII - REQUIRED)
+- [x] T002 **Commit project setup** (Constitution Principle XXII - REQUIRED)
 
 ---
 
@@ -43,7 +43,7 @@ Project structure: `src/` at repository root (single SolidJS web application)
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T003 **Read `specs/TESTING-GUIDE.md`** - Understand testing patterns and helpers (REQUIRED before any test code)
+- [x] T003 **Read `specs/TESTING-GUIDE.md`** - Understand testing patterns and helpers (REQUIRED before any test code)
 - [ ] T004 [P] Unit test for DemoContext in `src/demos/__tests__/DemoContext.spec.ts` (test createRoot isolation, cleanup verification)
 - [ ] T005 [P] Unit test for demoRegistry in `src/demos/__tests__/demoRegistry.spec.ts` (test registry lookup, DEMO_LIST iteration)
 - [ ] T006 [P] Component test for DemoMenu in `src/visualization/__tests__/DemoMenu.spec.tsx` (test menu open/close, demo selection, active demo highlighting)

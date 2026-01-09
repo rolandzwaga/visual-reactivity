@@ -1,0 +1,106 @@
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--color-overlay);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: var(--z-dialog);
+}
+
+.menu {
+	background: var(--color-bg-primary);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	min-width: 500px;
+	max-width: 700px;
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	box-shadow: var(--shadow-md);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: var(--spacing-lg);
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-2xl);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-text-primary);
+}
+
+.closeButton {
+	background: transparent;
+	border: none;
+	font-size: var(--font-size-3xl);
+	color: var(--color-gray-500);
+	cursor: pointer;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--radius-md);
+	transition: all var(--transition-base);
+}
+
+.closeButton:hover {
+	background: var(--color-gray-100);
+	color: var(--color-gray-700);
+}
+
+.demoList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+	overflow-y: auto;
+}
+
+.demoItem {
+	background: var(--color-bg-secondary);
+	border: var(--border-width-thin) solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	text-align: left;
+	cursor: pointer;
+	transition: all var(--transition-base);
+}
+
+.demoItem:hover {
+	background: var(--color-bg-hover);
+	border-color: var(--color-primary);
+}
+
+.demoItem.active {
+	background: var(--color-primary-light);
+	border-color: var(--color-primary);
+}
+
+.demoName {
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-text-primary);
+	margin-bottom: var(--spacing-xs);
+}
+
+.demoConcept {
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary);
+	margin-bottom: var(--spacing-sm);
+}
+
+.demoDescription {
+	font-size: var(--font-size-md);
+	color: var(--color-gray-600);
+	line-height: 1.5;
+}
