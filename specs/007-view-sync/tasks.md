@@ -95,7 +95,7 @@
 - [ ] T031 [P] [US1] Component test: DependencyGraph node click triggers selection in src/visualization/__tests__/DependencyGraph.spec.tsx
 - [ ] T032 [P] [US1] Component test: DependencyGraph applies stroke-width=3 when node is selected
 - [ ] T033 [P] [US1] Component test: OwnershipTree node click triggers selection in src/visualization/__tests__/OwnershipTree.spec.tsx
-- [ ] T034 [P] [US1] Component test: OwnershipTree highlights selected node with .selected CSS class
+- [ ] T034 [P] [US1] Component test: OwnershipTree highlights selected node with .selected CSS class and expands parent nodes to make selected node visible (FR-010)
 - [ ] T035 [P] [US1] Component test: TimelineView swimlane click triggers selection in src/visualization/__tests__/TimelineView.spec.tsx
 - [ ] T036 [P] [US1] Component test: TimelineView highlights selected node's swimlane
 - [ ] T037 [P] [US1] Component test: LiveValuesPanel row click triggers selection in src/visualization/__tests__/LiveValuesPanel.spec.tsx
@@ -113,7 +113,7 @@
 - [ ] T046 [P] [US1] Add selection prop to OwnershipTree component in src/visualization/OwnershipTree.tsx (integrate useSelectionSync hook)
 - [ ] T047 [US1] Add node click handler to OwnershipTree (call sync.handleNodeClick on g element click)
 - [ ] T048 [US1] Add selection highlighting to OwnershipTree nodes (apply .selected CSS class when isNodeSelected returns true)
-- [ ] T049 [US1] Add createEffect to OwnershipTree for reactive highlighting updates
+- [ ] T049 [US1] Add createEffect to OwnershipTree for reactive highlighting updates and auto-expand parent nodes when child is selected (FR-010)
 - [ ] T050 [P] [US1] Add selection prop to TimelineView component in src/visualization/TimelineView.tsx (integrate useSelectionSync hook)
 - [ ] T051 [US1] Add swimlane click handler to TimelineView (call sync.handleNodeClick on Swimlane click)
 - [ ] T052 [US1] Add swimlane highlighting to TimelineView (pass isSelected prop to Swimlane component)
@@ -233,6 +233,7 @@
 - [ ] T109 [P] Add disposed node visual indicator to OwnershipTree (apply .disposed CSS class)
 - [ ] T110 [P] Handle off-screen node selection with smooth scroll (integrate scroll-to-selected from T101-T103)
 - [ ] T111 [P] Add rapid selection debouncing (verify batch() prevents UI thrashing, test with 100+ rapid arrow key presses)
+- [ ] T111a [P] Integration test: Selection persistence across view hide/show (hide TimelineView → select node → show TimelineView → verify selection restored, FR-015)
 
 ### Documentation & Validation
 
@@ -242,6 +243,7 @@
 - [ ] T115 Performance validation: Measure selection-to-highlight time (target: <100ms across all views)
 - [ ] T116 Performance validation: Test multi-selection with 10 nodes (target: no visible lag or frame drops)
 - [ ] T117 Performance validation: Test rapid selection changes (100+ arrow key presses, target: no UI freezing)
+- [ ] T118 Edge case validation: Verify all 5 edge cases from spec.md are handled correctly
 
 ---
 

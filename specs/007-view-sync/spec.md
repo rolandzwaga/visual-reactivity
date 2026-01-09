@@ -45,7 +45,7 @@ As a developer analyzing reactive patterns, I want to select multiple nodes simu
 
 ### User Story 3 - Keyboard Navigation for Selection (Priority: P3)
 
-As a developer working efficiently, I want to navigate between selected nodes using keyboard shortcuts (arrow keys, Tab, etc.), so that I can quickly explore the reactive graph without switching between mouse and keyboard.
+As a developer working efficiently, I want to navigate between selected nodes using keyboard shortcuts (arrow keys), so that I can quickly explore the reactive graph without switching between mouse and keyboard.
 
 **Why this priority**: Keyboard navigation enhances productivity for power users but isn't essential for the core cross-view selection functionality. Most users can effectively use mouse-based selection.
 
