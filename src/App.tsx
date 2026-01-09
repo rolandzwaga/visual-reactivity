@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { tracker } from "./instrumentation";
+import { createSelectionStore } from "./stores/selectionStore";
 import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import type { DetailPanelData } from "./visualization/types";
 
@@ -8,6 +9,8 @@ type ViewMode = "graph" | "tree";
 export function App() {
 	const [selectedNodeId, setSelectedNodeId] = createSignal<string | null>(null);
 	const [viewMode, setViewMode] = createSignal<ViewMode>("graph");
+
+	const selection = createSelectionStore();
 
 	const getDetailPanelData = (): DetailPanelData | null => {
 		const nodeId = selectedNodeId();
@@ -75,6 +78,7 @@ export function App() {
 				<DependencyGraph
 					width={window.innerWidth}
 					height={window.innerHeight}
+					selection={selection}
 				/>
 			</Show>
 
@@ -84,6 +88,7 @@ export function App() {
 					height={window.innerHeight}
 					selectedNodeId={selectedNodeId()}
 					onSelectNode={setSelectedNodeId}
+					selection={selection}
 				/>
 			</Show>
 

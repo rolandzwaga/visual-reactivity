@@ -1,6 +1,7 @@
 import { select } from "d3-selection";
 import { type ZoomBehavior, zoom } from "d3-zoom";
 import {
+	createEffect,
 	createMemo,
 	createSignal,
 	For,
@@ -11,7 +12,12 @@ import {
 import { createAnimationController } from "../animation";
 import { tracker } from "../instrumentation";
 import type { SubscriptionAddData, SubscriptionRemoveData } from "../types";
-import { useForceSimulation, useGraphState } from "./hooks";
+import {
+	useForceSimulation,
+	useGraphState,
+	useKeyboardNav,
+	useSelectionSync,
+} from "./hooks";
 import { EffectNode, MemoNode, SignalNode } from "./nodes";
 import {
 	type DependencyGraphProps,
@@ -40,6 +46,14 @@ export function DependencyGraph(props: DependencyGraphProps) {
 	);
 
 	const animationController = createAnimationController();
+
+	const selectionSync = props.selection
+		? useSelectionSync("graph", props.selection)
+		: null;
+
+	const keyboardNav = props.selection
+		? useKeyboardNav("graph", props.selection)
+		: null;
 
 	const [transform, setTransform] = createSignal<ZoomTransform>({
 		k: 1,
@@ -134,6 +148,37 @@ export function DependencyGraph(props: DependencyGraphProps) {
 		});
 	});
 
+	createEffect(() => {
+		if (!selectionSync || !svgRef) return;
+
+		const selectedIds = selectionSync.highlightedNodeIds();
+		if (selectedIds.size === 0) return;
+
+		const firstSelectedId = Array.from(selectedIds)[0];
+		const posMap = nodePositions();
+		const pos = posMap.get(firstSelectedId);
+
+		if (pos && svgRef) {
+			const svgElement = select<SVGSVGElement, unknown>(svgRef);
+			const currentTransform = transform();
+
+			const centerX = width() / 2;
+			const centerY = height() / 2;
+
+			const targetX = centerX - pos.x * currentTransform.k;
+			const targetY = centerY - pos.y * currentTransform.k;
+
+			svgElement
+				.transition()
+				.duration(300)
+				.call(zoom<SVGSVGElement, unknown>().transform as never, {
+					k: currentTransform.k,
+					x: targetX,
+					y: targetY,
+				});
+		}
+	});
+
 	const nodePositions = createMemo(() => {
 		const posMap = new Map<string, { x: number; y: number }>();
 		for (const pos of positions()) {
@@ -173,8 +218,31 @@ export function DependencyGraph(props: DependencyGraphProps) {
 		});
 	});
 
-	const handleNodeClick = (nodeId: string) => {
-		state.setSelectedNode(state.selectedNodeId() === nodeId ? null : nodeId);
+	const connectedEdges = createMemo(() => {
+		if (!selectionSync) return new Set<string>();
+		const selected = selectionSync.highlightedNodeIds();
+		if (selected.size < 2) return new Set<string>();
+
+		const edges = new Set<string>();
+		for (const edge of state.edges()) {
+			const sourceId =
+				typeof edge.source === "string" ? edge.source : edge.source.id;
+			const targetId =
+				typeof edge.target === "string" ? edge.target : edge.target.id;
+			if (selected.has(sourceId) && selected.has(targetId)) {
+				const edgeId = `${sourceId}->${targetId}`;
+				edges.add(edgeId);
+			}
+		}
+		return edges;
+	});
+
+	const handleNodeClick = (nodeId: string, event?: MouseEvent) => {
+		if (selectionSync && event) {
+			selectionSync.handleNodeClick(nodeId, event);
+		} else {
+			state.setSelectedNode(state.selectedNodeId() === nodeId ? null : nodeId);
+		}
 	};
 
 	const handleNodeMouseEnter = (nodeId: string) => {
@@ -248,7 +316,10 @@ export function DependencyGraph(props: DependencyGraphProps) {
 	};
 
 	const renderNode = (node: GraphNode) => {
-		const isSelected = () => state.selectedNodeId() === node.id;
+		const isSelected = () =>
+			selectionSync
+				? selectionSync.isNodeSelected(node.id)
+				: state.selectedNodeId() === node.id;
 		const hoveredId = () => state.hoveredNodeId();
 		const isHovered = () => {
 			const hId = hoveredId();
@@ -256,55 +327,65 @@ export function DependencyGraph(props: DependencyGraphProps) {
 		};
 		const visualStateGetter = animationController.getNodeVisualState(node.id);
 		const visualState = () => visualStateGetter();
+		const isDisposed = () => visualState().disposeProgress > 0;
+
+		const nodeOpacity = () => (isDisposed() ? 0.4 : 1);
+		const nodeFilter = () => (isDisposed() ? "grayscale(100%)" : "none");
 
 		switch (node.type) {
 			case "signal":
 				return (
-					<SignalNode
-						node={node}
-						isSelected={isSelected()}
-						isHovered={isHovered()}
-						onClick={handleNodeClick}
-						onMouseEnter={handleNodeMouseEnter}
-						onMouseLeave={handleNodeMouseLeave}
-						pulseScale={visualState().pulseScale}
-						isStale={visualState().isStale}
-						isExecuting={visualState().isExecuting}
-						highlightOpacity={visualState().highlightOpacity}
-						disposeProgress={visualState().disposeProgress}
-					/>
+					<g opacity={nodeOpacity()} style={{ filter: nodeFilter() }}>
+						<SignalNode
+							node={node}
+							isSelected={isSelected()}
+							isHovered={isHovered()}
+							onClick={handleNodeClick}
+							onMouseEnter={handleNodeMouseEnter}
+							onMouseLeave={handleNodeMouseLeave}
+							pulseScale={visualState().pulseScale}
+							isStale={visualState().isStale}
+							isExecuting={visualState().isExecuting}
+							highlightOpacity={visualState().highlightOpacity}
+							disposeProgress={visualState().disposeProgress}
+						/>
+					</g>
 				);
 			case "memo":
 				return (
-					<MemoNode
-						node={node}
-						isSelected={isSelected()}
-						isHovered={isHovered()}
-						onClick={handleNodeClick}
-						onMouseEnter={handleNodeMouseEnter}
-						onMouseLeave={handleNodeMouseLeave}
-						pulseScale={visualState().pulseScale}
-						isStale={visualState().isStale}
-						isExecuting={visualState().isExecuting}
-						highlightOpacity={visualState().highlightOpacity}
-						disposeProgress={visualState().disposeProgress}
-					/>
+					<g opacity={nodeOpacity()} style={{ filter: nodeFilter() }}>
+						<MemoNode
+							node={node}
+							isSelected={isSelected()}
+							isHovered={isHovered()}
+							onClick={handleNodeClick}
+							onMouseEnter={handleNodeMouseEnter}
+							onMouseLeave={handleNodeMouseLeave}
+							pulseScale={visualState().pulseScale}
+							isStale={visualState().isStale}
+							isExecuting={visualState().isExecuting}
+							highlightOpacity={visualState().highlightOpacity}
+							disposeProgress={visualState().disposeProgress}
+						/>
+					</g>
 				);
 			case "effect":
 				return (
-					<EffectNode
-						node={node}
-						isSelected={isSelected()}
-						isHovered={isHovered()}
-						onClick={handleNodeClick}
-						onMouseEnter={handleNodeMouseEnter}
-						onMouseLeave={handleNodeMouseLeave}
-						pulseScale={visualState().pulseScale}
-						isStale={visualState().isStale}
-						isExecuting={visualState().isExecuting}
-						highlightOpacity={visualState().highlightOpacity}
-						disposeProgress={visualState().disposeProgress}
-					/>
+					<g opacity={nodeOpacity()} style={{ filter: nodeFilter() }}>
+						<EffectNode
+							node={node}
+							isSelected={isSelected()}
+							isHovered={isHovered()}
+							onClick={handleNodeClick}
+							onMouseEnter={handleNodeMouseEnter}
+							onMouseLeave={handleNodeMouseLeave}
+							pulseScale={visualState().pulseScale}
+							isStale={visualState().isStale}
+							isExecuting={visualState().isExecuting}
+							highlightOpacity={visualState().highlightOpacity}
+							disposeProgress={visualState().disposeProgress}
+						/>
+					</g>
 				);
 			default:
 				return null;
@@ -323,6 +404,8 @@ export function DependencyGraph(props: DependencyGraphProps) {
 			height={height()}
 			class={props.class}
 			style={{ "background-color": "#1a1a2e" }}
+			tabindex={props.selection ? 0 : undefined}
+			onKeyDown={(e) => keyboardNav?.handleKeyDown(e)}
 		>
 			<Show when={isEmpty()}>
 				<text
@@ -396,9 +479,11 @@ export function DependencyGraph(props: DependencyGraphProps) {
 										y2={edge.y2}
 										stroke={EDGE_STYLES.dependency.stroke}
 										stroke-width={
-											isEdgeConnectedToHovered(edge)
-												? EDGE_STYLES.dependency.strokeWidth + 1
-												: EDGE_STYLES.dependency.strokeWidth
+											connectedEdges().has(edgeId)
+												? EDGE_STYLES.dependency.strokeWidth + 2
+												: isEdgeConnectedToHovered(edge)
+													? EDGE_STYLES.dependency.strokeWidth + 1
+													: EDGE_STYLES.dependency.strokeWidth
 										}
 										stroke-opacity={
 											(state.hoveredNodeId() && !isEdgeConnectedToHovered(edge)

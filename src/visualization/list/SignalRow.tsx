@@ -5,7 +5,7 @@ import styles from "./SignalRow.module.css";
 export interface SignalRowProps {
 	signal: SignalEntry;
 	isSelected: boolean;
-	onClick: () => void;
+	onClick: (event?: MouseEvent) => void;
 	onValueEdit: (id: string, newValue: unknown) => void;
 }
 
@@ -13,8 +13,8 @@ export interface SignalRowProps {
  * A single row displaying a signal's name, type, value, and metadata.
  */
 export const SignalRow: Component<SignalRowProps> = (props) => {
-	const handleClick = () => {
-		props.onClick();
+	const handleClick = (e: MouseEvent) => {
+		props.onClick(e);
 	};
 
 	const handleKeyDown = (e: KeyboardEvent) => {

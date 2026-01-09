@@ -8,7 +8,16 @@ export {
 	useForceSimulation,
 } from "./useForceSimulation";
 export { type GraphStateActions, useGraphState } from "./useGraphState";
+export {
+	type KeyboardNavContext,
+	type KeyboardNavController,
+	useKeyboardNav,
+} from "./useKeyboardNav";
 export { usePanelState } from "./usePanelState";
+export {
+	type UseSelectionSyncReturn,
+	useSelectionSync,
+} from "./useSelectionSync";
 export { useSignalList } from "./useSignalList";
 export type {
 	ScrollState,

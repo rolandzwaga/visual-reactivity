@@ -107,7 +107,10 @@ describe("SignalList", () => {
 		const signal1 = getByText(/signal1/);
 		fireEvent.click(signal1.closest('[class*="row"]') || signal1);
 
-		expect(onSignalClick).toHaveBeenCalledWith("signal-1");
+		expect(onSignalClick).toHaveBeenCalledWith(
+			"signal-1",
+			expect.any(MouseEvent),
+		);
 	});
 
 	it("should highlight selected signal", () => {

@@ -15,6 +15,7 @@ import type {
 	TimelineFilter,
 	TimelineViewProps,
 } from "../types/timeline";
+import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useTimelineLayout } from "./hooks/useTimelineLayout";
 import styles from "./TimelineView.module.css";
 import { EventDetailsPanel } from "./timeline/EventDetailsPanel";
@@ -53,6 +54,10 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 		lastTickTime: null,
 		rafId: null,
 	});
+
+	const selectionSync = props.selection
+		? useSelectionSync("timeline", props.selection)
+		: null;
 
 	const nodes = () => Array.from(tracker.getNodes().values());
 
@@ -224,9 +229,18 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 								swimlane={swimlane}
 								events={getEventsForNode(swimlane.nodeId)}
 								scale={layout.scale()}
-								isSelected={false}
+								isSelected={
+									selectionSync
+										? selectionSync.isNodeSelected(swimlane.nodeId)
+										: false
+								}
 								onEventClick={handleEventClick}
 								onEventHover={handleEventHover}
+								onSwimlaneClick={(event) => {
+									if (selectionSync) {
+										selectionSync.handleNodeClick(swimlane.nodeId, event);
+									}
+								}}
 							/>
 						)}
 					</For>

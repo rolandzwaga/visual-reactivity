@@ -1,4 +1,11 @@
-import { type Component, createEffect, createMemo, For, Show } from "solid-js";
+import {
+	type Component,
+	createEffect,
+	createMemo,
+	createSelector,
+	For,
+	Show,
+} from "solid-js";
 import type { SignalEntry } from "../../types/panel";
 import { useVirtualScroll } from "../hooks/useVirtualScroll";
 import styles from "./SignalList.module.css";
@@ -7,8 +14,11 @@ import { SignalRow } from "./SignalRow";
 export interface SignalListProps {
 	signals: SignalEntry[];
 	selectedId: string | null;
-	onSignalClick: (id: string) => void;
+	onSignalClick: (id: string, event?: MouseEvent) => void;
 	onValueEdit: (id: string, newValue: unknown) => void;
+	selectionSync?:
+		| import("../hooks/useSelectionSync").UseSelectionSyncReturn
+		| null;
 }
 
 const ITEM_HEIGHT = 80; // Approximate height of SignalRow in pixels
@@ -91,8 +101,8 @@ export const SignalList: Component<SignalListProps> = (props) => {
 		}
 	});
 
-	const handleRowClick = (id: string) => {
-		props.onSignalClick(id);
+	const handleRowClick = (id: string, event?: MouseEvent) => {
+		props.onSignalClick(id, event);
 	};
 
 	const handleValueEdit = (id: string, newValue: unknown) => {
@@ -102,6 +112,18 @@ export const SignalList: Component<SignalListProps> = (props) => {
 	const setRowRef = (id: string, element: HTMLDivElement) => {
 		selectedRowRefs.set(id, element);
 	};
+
+	const selectedIds = createMemo(() => {
+		if (props.selectionSync) {
+			return props.selectionSync.highlightedNodeIds();
+		}
+		return new Set(props.selectedId ? [props.selectedId] : []);
+	});
+
+	const isSelected = createSelector<string>(
+		() => Array.from(selectedIds())[0] ?? "",
+		(key, _id) => selectedIds().has(key),
+	);
 
 	return (
 		<div class={styles.container} ref={containerRef}>
@@ -123,8 +145,8 @@ export const SignalList: Component<SignalListProps> = (props) => {
 									<div ref={(el) => setRowRef(signal.id, el)}>
 										<SignalRow
 											signal={signal}
-											isSelected={props?.selectedId === signal.id}
-											onClick={() => handleRowClick(signal.id)}
+											isSelected={isSelected(signal.id)}
+											onClick={(event) => handleRowClick(signal.id, event)}
 											onValueEdit={handleValueEdit}
 										/>
 									</div>
@@ -165,8 +187,8 @@ export const SignalList: Component<SignalListProps> = (props) => {
 										>
 											<SignalRow
 												signal={signal}
-												isSelected={props?.selectedId === signal.id}
-												onClick={() => handleRowClick(signal.id)}
+												isSelected={isSelected(signal.id)}
+												onClick={(event) => handleRowClick(signal.id, event)}
 												onValueEdit={handleValueEdit}
 											/>
 										</div>

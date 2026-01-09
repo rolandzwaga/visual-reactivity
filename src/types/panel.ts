@@ -122,6 +122,9 @@ export interface LiveValuesPanelProps {
 
 	/** Callback when panel width changes (via resize handle) */
 	onWidthChange: (width: number) => void;
+
+	/** Selection store for cross-view synchronization */
+	selection?: import("./selection").SelectionStore;
 }
 
 /**
