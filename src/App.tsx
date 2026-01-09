@@ -7,9 +7,9 @@ import { createReplayStore } from "./stores/replayStore";
 import { createSelectionStore } from "./stores/selectionStore";
 import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import { AnalysisPanel } from "./visualization/AnalysisPanel";
+import { useReplayState } from "./visualization/hooks/useReplayState";
 import { ReplayModeIndicator } from "./visualization/ReplayModeIndicator";
 import { TimelineView } from "./visualization/TimelineView";
-import { useReplayState } from "./visualization/hooks/useReplayState";
 import type { DetailPanelData } from "./visualization/types";
 
 type ViewMode = "graph" | "tree" | "timeline";

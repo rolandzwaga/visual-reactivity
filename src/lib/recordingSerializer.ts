@@ -16,7 +16,6 @@ function processDataForExport(
 
 	for (const [key, value] of Object.entries(data)) {
 		if (options.valueInclusion === "structure-only") {
-			continue;
 		} else if (options.valueInclusion === "truncated") {
 			processed[key] = truncateValue(value, options.truncationLimit);
 		} else {
