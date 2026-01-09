@@ -31,7 +31,7 @@ export function DiamondPattern() {
 				</div>
 			</div>
 			<div style={{ display: "flex", "align-items": "center", gap: "8px" }}>
-				<label htmlFor="value-input">Change value:</label>
+				<label for="value-input">Change value:</label>
 				<input
 					id="value-input"
 					type="number"
