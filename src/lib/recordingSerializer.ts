@@ -9,7 +9,7 @@ function truncateValue(value: unknown, limit: number): unknown {
 }
 
 function processDataForExport(
-	data: any,
+	data: Record<string, unknown>,
 	options: ExportOptions,
 ): Record<string, unknown> {
 	const processed: Record<string, unknown> = {};
@@ -36,7 +36,7 @@ export function exportRecording(
 ): string {
 	const processedEvents = recording.events.map((event) => ({
 		...event,
-		data: processDataForExport(event.data, options),
+		data: processDataForExport(event.data as Record<string, unknown>, options),
 	}));
 
 	const exportData = {

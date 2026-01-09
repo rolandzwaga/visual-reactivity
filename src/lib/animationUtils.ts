@@ -1,10 +1,12 @@
+import type { Selection } from "d3-selection";
 import { select } from "d3-selection";
-import { transition } from "d3-transition";
 
 const ANIMATION_DURATION = 300;
 
+type NodeData = { id: string; x: number; y: number; visible: boolean };
+
 export function animateGraphTransition(
-	selection: any,
+	selection: Selection<SVGElement, unknown, null, undefined>,
 	duration: number = ANIMATION_DURATION,
 ): void {
 	selection.interrupt("graph-transition");
@@ -13,21 +15,21 @@ export function animateGraphTransition(
 
 export function animateGraphNodes(
 	svg: SVGSVGElement,
-	nodeData: Array<{ id: string; x: number; y: number; visible: boolean }>,
+	nodeData: NodeData[],
 	duration: number = ANIMATION_DURATION,
 ): void {
 	const nodes = select(svg)
 		.selectAll(".node")
-		.data(nodeData, (d: any) => d.id);
+		.data(nodeData, (d) => (d as NodeData).id);
 
 	nodes.interrupt("graph-transition");
 
 	nodes
 		.transition("graph-transition")
 		.duration(duration)
-		.attr("cx", (d: any) => d.x)
-		.attr("cy", (d: any) => d.y)
-		.attr("opacity", (d: any) => (d.visible ? 1 : 0));
+		.attr("cx", (d: NodeData) => d.x)
+		.attr("cy", (d: NodeData) => d.y)
+		.attr("opacity", (d: NodeData) => (d.visible ? 1 : 0));
 }
 
 export function cancelGraphAnimations(svg: SVGSVGElement): void {

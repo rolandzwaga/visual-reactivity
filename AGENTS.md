@@ -19,6 +19,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-08
 - Browser localStorage for pattern detection settings and exceptions (008-pattern-detection-analysis)
 - TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-scale, d3-axis, d3-brush, d3-selection, d3-zoom - all already installed from Feature 006) (009-timeline-playback)
 - IndexedDB for persistent recording storage (clarified via Q1: preferred over localStorage for capacity) (009-timeline-playback)
+- TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, existing instrumented primitives (createTrackedSignal, createTrackedMemo, createTrackedEffect) (010-demo-examples)
+- None (demos are stateless, no persistence required) (010-demo-examples)
 
 - TypeScript 5.9.3 with strict mode + SolidJS 1.9.10 (wrapping its primitives) (001-core-instrumentation)
 
@@ -50,9 +52,9 @@ tests/
 TypeScript 5.9.3 with strict mode: Follow standard conventions
 
 ## Recent Changes
+- 010-demo-examples: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, existing instrumented primitives (createTrackedSignal, createTrackedMemo, createTrackedEffect)
 - 009-timeline-playback: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-scale, d3-axis, d3-brush, d3-selection, d3-zoom - all already installed from Feature 006)
 - 008-pattern-detection-analysis: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-selection, d3-zoom), existing ReactivityTracker
-- 007-view-sync: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10 (createStore, createEffect, createMemo), D3.js (existing - for graph/tree manipulation)
 
 
 <!-- MANUAL ADDITIONS START -->

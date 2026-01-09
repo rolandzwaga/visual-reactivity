@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
 import type { ReactivityEvent } from "../../types/events";
+import type { ReplayState } from "../../types/replay";
 import { createReplayStore } from "../replayStore";
 
 describe("ReplayStore", () => {
@@ -246,7 +247,7 @@ describe("ReplayStore", () => {
 	test("subscribe receives state changes", () => {
 		testInRoot(() => {
 			const store = createReplayStore();
-			const states: any[] = [];
+			const states: ReplayState[] = [];
 			store.subscribe((state) => states.push({ ...state }));
 
 			store.setCursor(1000);

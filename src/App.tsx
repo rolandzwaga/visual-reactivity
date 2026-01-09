@@ -1,5 +1,7 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, ErrorBoundary, Show } from "solid-js";
 import { createPatternDetector } from "./analysis/patternDetector";
+import { getAllDemos, getDemo } from "./demos/demoRegistry";
+import type { DemoContext, DemoMetadata } from "./demos/types";
 import { tracker } from "./instrumentation";
 import { createPatternStore } from "./stores/patternStore";
 import { createRecordingStore } from "./stores/recordingStore";
@@ -7,10 +9,14 @@ import { createReplayStore } from "./stores/replayStore";
 import { createSelectionStore } from "./stores/selectionStore";
 import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import { AnalysisPanel } from "./visualization/AnalysisPanel";
+import { DemoErrorFallback } from "./visualization/DemoErrorFallback";
+import { DemoMenu } from "./visualization/DemoMenu";
+import { DemoPanel } from "./visualization/DemoPanel";
 import { useReplayState } from "./visualization/hooks/useReplayState";
 import { ReplayModeIndicator } from "./visualization/ReplayModeIndicator";
 import { TimelineView } from "./visualization/TimelineView";
 import type { DetailPanelData } from "./visualization/types";
+import { WelcomeMessage } from "./visualization/WelcomeMessage";
 
 type ViewMode = "graph" | "tree" | "timeline";
 
@@ -20,6 +26,13 @@ export function App() {
 	const [analysisExpanded, setAnalysisExpanded] = createSignal(false);
 	const [analysisPanelWidth, setAnalysisPanelWidth] = createSignal(350);
 	const [showExpectedPatterns, setShowExpectedPatterns] = createSignal(false);
+
+	const [demoMenuOpen, setDemoMenuOpen] = createSignal(false);
+	const [activeDemoId, setActiveDemoId] = createSignal<string | null>(null);
+	const [activeDemoMetadata, setActiveDemoMetadata] =
+		createSignal<DemoMetadata | null>(null);
+	const [demoContext, setDemoContext] = createSignal<DemoContext | null>(null);
+	const [demoError, setDemoError] = createSignal<Error | null>(null);
 
 	const selection = createSelectionStore();
 	const patternStore = createPatternStore();
@@ -52,6 +65,62 @@ export function App() {
 			.filter((n): n is NonNullable<typeof n> => n !== undefined);
 
 		return { node, sources, observers };
+	};
+
+	const cleanupDemo = () => {
+		const ctx = demoContext();
+		if (ctx) {
+			ctx.dispose();
+			setDemoContext(null);
+		}
+		tracker.reset();
+	};
+
+	const loadDemo = (demoId: string) => {
+		try {
+			cleanupDemo();
+			setDemoError(null);
+
+			const demo = getDemo(demoId);
+			if (!demo) {
+				throw new Error(`Demo not found: ${demoId}`);
+			}
+
+			setActiveDemoId(demoId);
+			setActiveDemoMetadata(demo.metadata);
+
+			const ctx = demo.setup();
+			setDemoContext(ctx);
+		} catch (error) {
+			setDemoError(error as Error);
+			setActiveDemoId(null);
+			setActiveDemoMetadata(null);
+		}
+	};
+
+	const closeDemo = () => {
+		cleanupDemo();
+		setActiveDemoId(null);
+		setActiveDemoMetadata(null);
+		setDemoError(null);
+	};
+
+	const resetDemo = () => {
+		const currentDemoId = activeDemoId();
+		if (currentDemoId) {
+			loadDemo(currentDemoId);
+		}
+	};
+
+	const _handleDemoError = (error: Error) => {
+		setDemoError(error);
+	};
+
+	const retryDemo = () => {
+		const currentDemoId = activeDemoId();
+		if (currentDemoId) {
+			loadDemo(currentDemoId);
+		}
 	};
 
 	return (
@@ -126,6 +195,21 @@ export function App() {
 				>
 					Timeline
 				</button>
+				<button
+					type="button"
+					onClick={() => setDemoMenuOpen(true)}
+					style={{
+						padding: "8px 16px",
+						background: activeDemoId() ? "#10b981" : "white",
+						color: activeDemoId() ? "white" : "#1f2937",
+						border: "1px solid #d1d5db",
+						"border-radius": "6px",
+						cursor: "pointer",
+						"font-weight": "500",
+					}}
+				>
+					Demos
+				</button>
 			</div>
 
 			<Show when={viewMode() === "graph"}>
@@ -183,6 +267,59 @@ export function App() {
 				width={analysisPanelWidth()}
 				onWidthChange={setAnalysisPanelWidth}
 			/>
+
+			<DemoMenu
+				isOpen={demoMenuOpen()}
+				demos={getAllDemos()}
+				activeDemoId={activeDemoId()}
+				onSelect={loadDemo}
+				onClose={() => setDemoMenuOpen(false)}
+			/>
+
+			<Show when={!activeDemoId()}>
+				<WelcomeMessage onOpenMenu={() => setDemoMenuOpen(true)} />
+			</Show>
+
+			<Show when={demoError()}>
+				{(error) => (
+					<DemoPanel
+						metadata={activeDemoMetadata()}
+						onClose={closeDemo}
+						onReset={resetDemo}
+					>
+						<DemoErrorFallback
+							error={error()}
+							onClose={closeDemo}
+							onRetry={retryDemo}
+						/>
+					</DemoPanel>
+				)}
+			</Show>
+
+			<Show when={activeDemoId() && !demoError()}>
+				<DemoPanel
+					metadata={activeDemoMetadata()}
+					onClose={closeDemo}
+					onReset={resetDemo}
+				>
+					<ErrorBoundary
+						fallback={(error) => (
+							<DemoErrorFallback
+								error={error}
+								onClose={closeDemo}
+								onRetry={retryDemo}
+							/>
+						)}
+					>
+						<Show when={activeDemoId()}>
+							{(demoId) => {
+								const demo = getDemo(demoId());
+								return demo ? demo.component() : null;
+							}}
+						</Show>
+					</ErrorBoundary>
+				</DemoPanel>
+			</Show>
 		</div>
 	);
 }
