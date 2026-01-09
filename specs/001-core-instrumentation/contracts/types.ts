@@ -142,4 +142,4 @@ export type TrackedSignal<T> = [
 
 export type TrackedMemo<T> = () => T;
 
-export type TrackedEffect = void;
+export type TrackedEffect = undefined;
