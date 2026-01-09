@@ -1,8 +1,13 @@
-import { scaleUtc } from "d3-scale";
+import { scaleUtc, scaleUtc } from "d3-scale";
 import { createStore } from "solid-js/store";
 import type { TimelineState } from "../types/timeline";
 
-export function createInitialTimelineState(): TimelineState {
+export interface TimelineStoreState extends TimelineState {
+	selectedEventIds: Set<string>;
+	hoveredEventId: string | null;
+}
+
+export function createInitialTimelineState(): TimelineStoreState {
 	return {
 		events: [],
 		swimlanes: [],
@@ -39,11 +44,13 @@ export function createInitialTimelineState(): TimelineState {
 			rafId: null,
 		},
 		liveMode: "live",
+		selectedEventIds: new Set(),
+		hoveredEventId: null,
 	};
 }
 
 export const DEFAULT_TIMELINE_STATE = createInitialTimelineState;
 
 export function createTimelineStore() {
-	return createStore<TimelineState>(createInitialTimelineState());
+	return createStore<TimelineStoreState>(createInitialTimelineState());
 }

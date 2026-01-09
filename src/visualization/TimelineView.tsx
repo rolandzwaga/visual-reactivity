@@ -50,30 +50,56 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 		return timelineEvents().filter((e) => e.nodeId === nodeId);
 	};
 
-	return (
-		<svg
-			width={props.width}
-			height={props.height}
-			class={styles.timelineView}
-			style={{ overflow: "visible" }}
-		>
-			<g>
-				<For each={layout.swimlanes()}>
-					{(swimlane) => (
-						<Swimlane
-							swimlane={swimlane}
-							events={getEventsForNode(swimlane.nodeId)}
-							scale={layout.scale()}
-							isSelected={false}
-							onEventClick={props.onEventClick}
-						/>
-					)}
-				</For>
-			</g>
+	const handleEventClick = (event: TimelineEvent) => {
+		setSelectedEvent(event);
+		props.onEventClick?.(event);
+	};
 
-			<g transform={`translate(0, ${props.height - 30})`}>
-				<TimelineAxis scale={layout.scale()} />
-			</g>
-		</svg>
+	const handleEventHover = (event: TimelineEvent | null) => {
+		setHoveredEvent(event);
+	};
+
+	return (
+		<div style={{ position: "relative" }}>
+			<svg
+				width={props.width}
+				height={props.height}
+				class={styles.timelineView}
+				style={{ overflow: "visible" }}
+			>
+				<g>
+					<For each={layout.swimlanes()}>
+						{(swimlane) => (
+							<Swimlane
+								swimlane={swimlane}
+								events={getEventsForNode(swimlane.nodeId)}
+								scale={layout.scale()}
+								isSelected={false}
+								onEventClick={handleEventClick}
+								onEventHover={handleEventHover}
+							/>
+						)}
+					</For>
+				</g>
+
+				<g transform={`translate(0, ${props.height - 30})`}>
+					<TimelineAxis scale={layout.scale()} />
+				</g>
+			</svg>
+
+			<Show when={hoveredEvent()}>
+				<EventTooltip
+					event={hoveredEvent()!}
+					x={tooltipPos().x}
+					y={tooltipPos().y}
+					visible={true}
+				/>
+			</Show>
+
+			<EventDetailsPanel
+				event={selectedEvent()}
+				onClose={() => setSelectedEvent(null)}
+			/>
+		</div>
 	);
 };
