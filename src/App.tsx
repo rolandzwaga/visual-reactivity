@@ -2,12 +2,17 @@ import { createSignal, Show } from "solid-js";
 import { createPatternDetector } from "./analysis/patternDetector";
 import { tracker } from "./instrumentation";
 import { createPatternStore } from "./stores/patternStore";
+import { createRecordingStore } from "./stores/recordingStore";
+import { createReplayStore } from "./stores/replayStore";
 import { createSelectionStore } from "./stores/selectionStore";
 import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import { AnalysisPanel } from "./visualization/AnalysisPanel";
+import { useReplayState } from "./visualization/hooks/useReplayState";
+import { ReplayModeIndicator } from "./visualization/ReplayModeIndicator";
+import { TimelineView } from "./visualization/TimelineView";
 import type { DetailPanelData } from "./visualization/types";
 
-type ViewMode = "graph" | "tree";
+type ViewMode = "graph" | "tree" | "timeline";
 
 export function App() {
 	const [selectedNodeId, setSelectedNodeId] = createSignal<string | null>(null);
@@ -18,6 +23,9 @@ export function App() {
 
 	const selection = createSelectionStore();
 	const patternStore = createPatternStore();
+	const replayStore = createReplayStore();
+	const recordingStore = createRecordingStore();
+	const replayState = useReplayState(replayStore);
 	const _patternDetector = createPatternDetector(
 		() => Array.from(tracker.getNodes().values()),
 		() =>
@@ -48,6 +56,21 @@ export function App() {
 
 	return (
 		<div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+			<Show when={replayState().active}>
+				<div
+					style={{
+						position: "absolute",
+						top: "16px",
+						left: "16px",
+						"z-index": "100",
+					}}
+				>
+					<ReplayModeIndicator
+						replayStore={replayStore}
+						onExit={() => replayStore.clearCursor()}
+					/>
+				</div>
+			</Show>
 			<div
 				style={{
 					position: "absolute",
@@ -88,6 +111,21 @@ export function App() {
 				>
 					Ownership Tree
 				</button>
+				<button
+					type="button"
+					onClick={() => setViewMode("timeline")}
+					style={{
+						padding: "8px 16px",
+						background: viewMode() === "timeline" ? "#3b82f6" : "white",
+						color: viewMode() === "timeline" ? "white" : "#1f2937",
+						border: "1px solid #d1d5db",
+						"border-radius": "6px",
+						cursor: "pointer",
+						"font-weight": "500",
+					}}
+				>
+					Timeline
+				</button>
 			</div>
 
 			<Show when={viewMode() === "graph"}>
@@ -95,6 +133,7 @@ export function App() {
 					width={window.innerWidth}
 					height={window.innerHeight}
 					selection={selection}
+					replayStore={replayStore}
 				/>
 			</Show>
 
@@ -105,6 +144,17 @@ export function App() {
 					selectedNodeId={selectedNodeId()}
 					onSelectNode={setSelectedNodeId}
 					selection={selection}
+					replayStore={replayStore}
+				/>
+			</Show>
+
+			<Show when={viewMode() === "timeline"}>
+				<TimelineView
+					width={window.innerWidth}
+					height={window.innerHeight}
+					selection={selection}
+					replayStore={replayStore}
+					recordingStore={recordingStore}
 				/>
 			</Show>
 

@@ -15,7 +15,9 @@ import type { SubscriptionAddData, SubscriptionRemoveData } from "../types";
 import {
 	useForceSimulation,
 	useGraphState,
+	useHistoricalGraph,
 	useKeyboardNav,
+	useReplayState,
 	useSelectionSync,
 } from "./hooks";
 import { EffectNode, MemoNode, SignalNode } from "./nodes";
@@ -53,6 +55,13 @@ export function DependencyGraph(props: DependencyGraphProps) {
 
 	const keyboardNav = props.selection
 		? useKeyboardNav("graph", props.selection)
+		: null;
+
+	const replayState = props.replayStore
+		? useReplayState(props.replayStore)
+		: null;
+	const historicalGraph = props.replayStore
+		? useHistoricalGraph(props.replayStore, () => tracker.getEvents())
 		: null;
 
 	const [transform, setTransform] = createSignal<ZoomTransform>({
@@ -176,6 +185,92 @@ export function DependencyGraph(props: DependencyGraphProps) {
 					x: targetX,
 					y: targetY,
 				});
+		}
+	});
+
+	createEffect(() => {
+		if (!replayState || !historicalGraph) return;
+
+		const replay = replayState();
+		const historical = historicalGraph();
+
+		if (replay.active && historical) {
+			const currentNodeIds = new Set(state.nodes().map((n) => n.id));
+			for (const id of currentNodeIds) {
+				state.removeNode(id);
+			}
+
+			for (const [, historicalNode] of historical.activeNodes) {
+				const reactiveNode = {
+					id: historicalNode.node.id,
+					type: historicalNode.node.type as import("../types").NodeType,
+					name: historicalNode.node.name,
+					value: historicalNode.value,
+					isStale: false,
+					isExecuting: false,
+					executionCount: 0,
+					createdAt: historicalNode.createdAt,
+					lastExecutedAt: historicalNode.lastUpdateTime,
+					disposedAt: null,
+					sources: [],
+					observers: [],
+					owner: null,
+					owned: [],
+				};
+				state.addNode(reactiveNode);
+			}
+
+			for (const edge of historical.edges) {
+				state.addEdge(
+					edge.from,
+					edge.to,
+					edge.type as import("../types").EdgeType,
+				);
+			}
+		} else if (!replay.active) {
+			const currentNodeIds = new Set(state.nodes().map((n) => n.id));
+			const liveNodes = tracker.getNodes();
+
+			for (const id of currentNodeIds) {
+				if (!liveNodes.has(id)) {
+					state.removeNode(id);
+				}
+			}
+
+			for (const [, node] of liveNodes) {
+				if (!currentNodeIds.has(node.id)) {
+					state.addNode(node);
+				}
+			}
+
+			const currentEdgeIds = new Set(
+				state.edges().map((e) => {
+					const sourceId =
+						typeof e.source === "string" ? e.source : e.source.id;
+					const targetId =
+						typeof e.target === "string" ? e.target : e.target.id;
+					return `${sourceId}->${targetId}`;
+				}),
+			);
+			const liveEdges = tracker.getEdges();
+
+			for (const edge of state.edges()) {
+				const sourceId =
+					typeof edge.source === "string" ? edge.source : edge.source.id;
+				const targetId =
+					typeof edge.target === "string" ? edge.target : edge.target.id;
+				const edgeKey = `${sourceId}->${targetId}`;
+				if (!liveEdges.has(edgeKey)) {
+					state.removeEdge(sourceId, targetId);
+				}
+			}
+
+			for (const [, edge] of liveEdges) {
+				const edgeKey = `${edge.source}->${edge.target}`;
+				if (!currentEdgeIds.has(edgeKey)) {
+					state.addEdge(edge.source, edge.target, edge.type);
+				}
+			}
 		}
 	});
 

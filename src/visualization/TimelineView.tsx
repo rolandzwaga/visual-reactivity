@@ -15,12 +15,15 @@ import type {
 	TimelineFilter,
 	TimelineViewProps,
 } from "../types/timeline";
+import { useKeyboardNavigation } from "./hooks/useKeyboardNavigation";
 import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useTimelineLayout } from "./hooks/useTimelineLayout";
 import styles from "./TimelineView.module.css";
 import { EventDetailsPanel } from "./timeline/EventDetailsPanel";
 import { EventTooltip } from "./timeline/EventTooltip";
+import { ExportImportControls } from "./timeline/ExportImportControls";
 import { PlaybackControls } from "./timeline/PlaybackControls";
+import { RecordingManager } from "./timeline/RecordingManager";
 import { Swimlane } from "./timeline/Swimlane";
 import { TimelineAxis } from "./timeline/TimelineAxis";
 import { TimelineCursor } from "./timeline/TimelineCursor";
@@ -28,6 +31,9 @@ import { TimelineFilters } from "./timeline/TimelineFilters";
 
 export const TimelineView: Component<TimelineViewProps> = (props) => {
 	const [events, setEvents] = createSignal<ReactivityEvent[]>([]);
+	const [currentRecording, setCurrentRecording] = createSignal<
+		import("../types/replay").Recording | null
+	>(null);
 	const [hoveredEvent, setHoveredEvent] = createSignal<TimelineEvent | null>(
 		null,
 	);
@@ -53,6 +59,7 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 		mode: "manual",
 		lastTickTime: null,
 		rafId: null,
+		loop: false,
 	});
 
 	const selectionSync = props.selection
@@ -146,8 +153,17 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 				const newTime = (cursorTime() || 0) + delta * playback().speed;
 
 				if (newTime >= maxTime) {
-					setCursorTime(maxTime);
-					handlePause();
+					if (playback().loop) {
+						setCursorTime(timelineEvents()[0]?.timestamp || 0);
+						setPlayback({
+							...playback(),
+							lastTickTime: timestamp,
+							rafId: requestAnimationFrame(tick),
+						});
+					} else {
+						setCursorTime(maxTime);
+						handlePause();
+					}
 					return;
 				}
 
@@ -187,6 +203,38 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 		setPlayback({ ...playback(), speed });
 	};
 
+	const handleStepForward = () => {
+		if (props.replayStore) {
+			props.replayStore.stepForward(events());
+		}
+	};
+
+	const handleStepBackward = () => {
+		if (props.replayStore) {
+			props.replayStore.stepBackward(events());
+		}
+	};
+
+	const handleJumpToStart = () => {
+		if (props.replayStore) {
+			props.replayStore.jumpToStart(events());
+		}
+	};
+
+	const handleJumpToEnd = () => {
+		if (props.replayStore) {
+			props.replayStore.jumpToEnd(events());
+		}
+	};
+
+	const handleToggleLoop = () => {
+		setPlayback({ ...playback(), loop: !playback().loop });
+	};
+
+	if (props.replayStore) {
+		useKeyboardNavigation(props.replayStore, events);
+	}
+
 	onCleanup(() => {
 		if (playback().rafId !== null) {
 			cancelAnimationFrame(playback().rafId!);
@@ -212,7 +260,32 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 					onPlay={handlePlay}
 					onPause={handlePause}
 					onSpeedChange={handleSpeedChange}
+					onStepForward={handleStepForward}
+					onStepBackward={handleStepBackward}
+					onJumpToStart={handleJumpToStart}
+					onJumpToEnd={handleJumpToEnd}
+					onToggleLoop={handleToggleLoop}
 				/>
+				<Show when={props.recordingStore && props.replayStore}>
+					<RecordingManager
+						recordingStore={props.recordingStore!}
+						onLoad={async (id) => {
+							const recording = await props.recordingStore!.load(id);
+							if (recording) {
+								setEvents(recording.events);
+								setCurrentRecording(recording);
+								props.replayStore!.loadRecording(recording);
+							}
+						}}
+						onSave={async (name) => {
+							await props.recordingStore!.save(name, events());
+						}}
+					/>
+					<ExportImportControls
+						recordingStore={props.recordingStore!}
+						currentRecording={currentRecording()}
+					/>
+				</Show>
 			</div>
 
 			<svg

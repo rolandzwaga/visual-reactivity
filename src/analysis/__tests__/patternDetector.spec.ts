@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createPatternDetector } from "../patternDetector";
 import { createReactiveNode } from "../../types/nodes";
+import { createPatternDetector } from "../patternDetector";
 
 describe("PatternDetector", () => {
 	it("creates detector instance", () => {

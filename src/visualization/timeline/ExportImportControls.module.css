@@ -1,0 +1,85 @@
+.container {
+	display: flex;
+	gap: 16px;
+	padding: 12px;
+	background: #f9fafb;
+	border-radius: 8px;
+	border: 1px solid #e5e7eb;
+}
+
+.exportSection {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex: 1;
+}
+
+.label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #374151;
+}
+
+.select {
+	padding: 6px 10px;
+	border: 1px solid #d1d5db;
+	border-radius: 4px;
+	font-size: 13px;
+	background: white;
+}
+
+.exportButton {
+	padding: 8px 16px;
+	background: #3b82f6;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.exportButton:hover:not(:disabled) {
+	background: #2563eb;
+}
+
+.exportButton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.importSection {
+	display: flex;
+	align-items: center;
+}
+
+.importLabel {
+	padding: 8px 16px;
+	background: #10b981;
+	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+	display: inline-block;
+}
+
+.importLabel:hover {
+	background: #059669;
+}
+
+.fileInput {
+	display: none;
+}
+
+.error {
+	padding: 8px 12px;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 4px;
+	color: #991b1b;
+	font-size: 13px;
+}

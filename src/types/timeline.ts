@@ -151,7 +151,7 @@ export interface PlaybackState {
 	/** Whether playback is active */
 	isPlaying: boolean;
 
-	/** Playback speed multiplier (0.5, 1, 2, 5) */
+	/** Playback speed multiplier (0.25, 0.5, 1, 2, 5) */
 	speed: number;
 
 	/** Playback mode */
@@ -162,6 +162,9 @@ export interface PlaybackState {
 
 	/** requestAnimationFrame ID for cancellation (null if not active) */
 	rafId: number | null;
+
+	/** Whether to loop playback */
+	loop?: boolean;
 }
 
 /**
@@ -432,6 +435,12 @@ export interface TimelineViewProps {
 
 	/** Selection store for cross-view synchronization */
 	selection?: import("./selection").SelectionStore;
+
+	/** Replay store for event replay functionality */
+	replayStore?: import("../stores/replayStore").ReplayStore;
+
+	/** Recording store for save/load functionality */
+	recordingStore?: import("../stores/recordingStore").RecordingStore;
 }
 
 /**
@@ -518,6 +527,21 @@ export interface PlaybackControlsProps {
 
 	/** Callback when speed changed */
 	onSpeedChange?: (speed: number) => void;
+
+	/** Callback for step forward */
+	onStepForward?: () => void;
+
+	/** Callback for step backward */
+	onStepBackward?: () => void;
+
+	/** Callback for jump to start */
+	onJumpToStart?: () => void;
+
+	/** Callback for jump to end */
+	onJumpToEnd?: () => void;
+
+	/** Callback for toggle loop mode */
+	onToggleLoop?: () => void;
 }
 
 /**

@@ -21,6 +21,7 @@ class ReactivityTracker {
 	private subscribers = new Set<EventCallback>();
 	private nodeCounter = 0;
 	private eventCounter = 0;
+	private events: ReactivityEvent[] = [];
 
 	registerNode(type: NodeType, name: string | null, value: unknown): string {
 		const id = this.generateNodeId(type);
@@ -118,9 +119,14 @@ class ReactivityTracker {
 			nodeId,
 			data,
 		);
+		this.events.push(event);
 		for (const callback of this.subscribers) {
 			callback(event);
 		}
+	}
+
+	getEvents(): ReactivityEvent[] {
+		return this.events;
 	}
 
 	reset(): void {
@@ -129,6 +135,7 @@ class ReactivityTracker {
 		this.subscribers.clear();
 		this.nodeCounter = 0;
 		this.eventCounter = 0;
+		this.events = [];
 	}
 }
 

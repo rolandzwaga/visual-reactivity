@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { detectOrphanedEffects } from "../orphanedEffects";
 import { createReactiveNode } from "../../../types/nodes";
+import { detectOrphanedEffects } from "../orphanedEffects";
 
 describe("detectOrphanedEffects", () => {
 	it("detects effects with null owner", () => {

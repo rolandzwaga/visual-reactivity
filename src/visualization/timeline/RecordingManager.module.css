@@ -1,0 +1,192 @@
+.container {
+	position: relative;
+}
+
+.triggerButton {
+	padding: 8px 16px;
+	background: white;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.triggerButton:hover {
+	background: #f9fafb;
+}
+
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2000;
+}
+
+.content {
+	background: white;
+	border-radius: 12px;
+	padding: 24px;
+	width: 600px;
+	max-height: 80vh;
+	overflow-y: auto;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+	margin: 0 0 20px 0;
+	font-size: 24px;
+	font-weight: 600;
+	color: #1f2937;
+}
+
+.saveSection {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.input {
+	flex: 1;
+	padding: 8px 12px;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.saveButton {
+	padding: 8px 16px;
+	background: #3b82f6;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.saveButton:hover {
+	background: #2563eb;
+}
+
+.error {
+	padding: 12px;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 6px;
+	color: #991b1b;
+	font-size: 14px;
+	margin-bottom: 16px;
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 20px;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.recordingItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	background: #f9fafb;
+}
+
+.recordingInfo {
+	flex: 1;
+}
+
+.recordingName {
+	font-weight: 500;
+	color: #1f2937;
+	margin-bottom: 4px;
+}
+
+.recordingMeta {
+	font-size: 12px;
+	color: #6b7280;
+}
+
+.recordingActions {
+	display: flex;
+	gap: 8px;
+}
+
+.loadButton {
+	padding: 6px 12px;
+	background: #10b981;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.loadButton:hover {
+	background: #059669;
+}
+
+.deleteButton {
+	padding: 6px 12px;
+	background: #ef4444;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.deleteButton:hover {
+	background: #dc2626;
+}
+
+.confirmDelete {
+	padding: 6px 12px;
+	background: #dc2626;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.cancelButton {
+	padding: 6px 12px;
+	background: #6b7280;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.closeButton {
+	width: 100%;
+	padding: 10px;
+	background: #e5e7eb;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.closeButton:hover {
+	background: #d1d5db;
+}

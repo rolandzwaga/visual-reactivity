@@ -33,6 +33,15 @@ export type {
 } from "./pattern";
 export { DEFAULT_THRESHOLDS, SEVERITY_COLORS } from "./pattern";
 export type {
+	ExportOptions,
+	HistoricalGraphState,
+	HistoricalNode,
+	PlaybackControlState,
+	Recording,
+	RecordingMetadata,
+	ReplayState,
+} from "./replay";
+export type {
 	BatchClickCallback,
 	CursorMoveCallback,
 	CursorSnapOptions,

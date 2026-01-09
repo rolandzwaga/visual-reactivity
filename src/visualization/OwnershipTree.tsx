@@ -11,7 +11,9 @@ import { tracker } from "../instrumentation";
 import type { ReactiveNode } from "../types";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useHierarchyLayout } from "./hooks/useHierarchyLayout";
+import { useHistoricalGraph } from "./hooks/useHistoricalGraph";
 import { useKeyboardNav } from "./hooks/useKeyboardNav";
+import { useReplayState } from "./hooks/useReplayState";
 import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useTreeState } from "./hooks/useTreeState";
 import { Notification } from "./Notification";
@@ -25,6 +27,7 @@ export interface OwnershipTreeProps {
 	onSelectNode?: (nodeId: string | null) => void;
 	class?: string;
 	selection?: import("../types/selection").SelectionStore;
+	replayStore?: import("../stores/replayStore").ReplayStore;
 }
 
 const DEFAULT_EXPANSION_DEPTH = 2;
@@ -61,6 +64,13 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 		? useKeyboardNav("tree", props.selection)
 		: null;
 
+	const replayState = props.replayStore
+		? useReplayState(props.replayStore)
+		: null;
+	const historicalGraph = props.replayStore
+		? useHistoricalGraph(props.replayStore, () => tracker.getEvents())
+		: null;
+
 	const [contextMenu, setContextMenu] = createSignal<{
 		x: number;
 		y: number;
@@ -86,6 +96,42 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 		onCleanup(() => {
 			unsubscribe();
 		});
+	});
+
+	createEffect(() => {
+		if (!replayState || !historicalGraph) return;
+
+		const replay = replayState();
+		const historical = historicalGraph();
+
+		if (replay.active && historical) {
+			const historicalNodes = new Map<
+				string,
+				import("../types").ReactiveNode
+			>();
+			for (const [id, historicalNode] of historical.activeNodes) {
+				const reactiveNode: import("../types").ReactiveNode = {
+					id: historicalNode.node.id,
+					type: historicalNode.node.type as import("../types").NodeType,
+					name: historicalNode.node.name,
+					value: historicalNode.value,
+					isStale: false,
+					isExecuting: false,
+					executionCount: 0,
+					createdAt: historicalNode.createdAt,
+					lastExecutedAt: historicalNode.lastUpdateTime,
+					disposedAt: null,
+					sources: [],
+					observers: [],
+					owner: null,
+					owned: [],
+				};
+				historicalNodes.set(id, reactiveNode);
+			}
+			setNodes(historicalNodes);
+		} else if (!replay.active) {
+			setNodes(new Map(tracker.getNodes()));
+		}
 	});
 
 	createEffect(() => {
