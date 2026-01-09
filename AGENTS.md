@@ -11,6 +11,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-08
 - Browser localStorage for panel visibility and width preferences (004-live-values-panel)
 - TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-hierarchy, d3-selection, d3-zoom for reuse) (005-ownership-tree-view)
 - In-memory state from ReactivityTracker (no persistence) (005-ownership-tree-view)
+- TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-scale for time scales, d3-axis for axis rendering, d3-brush for cursor, d3-selection for DOM, d3-zoom for navigation - **d3-axis and d3-brush need adding**) (006-timeline-view-horizontal)
+- In-memory event history from ReactivityTracker, browser localStorage for panel preferences (visibility, height, filters) (006-timeline-view-horizontal)
 
 - TypeScript 5.9.3 with strict mode + SolidJS 1.9.10 (wrapping its primitives) (001-core-instrumentation)
 
@@ -42,9 +44,9 @@ tests/
 TypeScript 5.9.3 with strict mode: Follow standard conventions
 
 ## Recent Changes
+- 006-timeline-view-horizontal: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-scale for time scales, d3-axis for axis rendering, d3-brush for cursor, d3-selection for DOM, d3-zoom for navigation - **d3-axis and d3-brush need adding**)
 - 005-ownership-tree-view: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-hierarchy, d3-selection, d3-zoom for reuse)
 - 004-live-values-panel: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (already installed for sparklines)
-- 003-animation-system: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-transition, d3-ease, d3-interpolate)
 
 
 <!-- MANUAL ADDITIONS START -->

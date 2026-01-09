@@ -1,0 +1,28 @@
+.eventMark {
+	transition:
+		r 0.15s ease,
+		opacity 0.15s ease;
+	opacity: 0.8;
+}
+
+.eventMark:hover {
+	opacity: 1;
+	r: 5px;
+}
+
+.eventMark.selected {
+	stroke: var(--color-accent, #2563eb);
+	stroke-width: 2;
+	opacity: 1;
+}
+
+.eventMark.hovered {
+	r: 6px;
+	opacity: 1;
+}
+
+.eventMark.snapped {
+	stroke: var(--color-warning, #f59e0b);
+	stroke-width: 2;
+	opacity: 1;
+}

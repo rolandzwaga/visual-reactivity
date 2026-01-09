@@ -25,7 +25,6 @@ describe("createTrackedSignal", () => {
 			expect(node?.type).toBe("signal");
 			expect(node?.name).toBe("count");
 			expect(node?.value).toBe(42);
-
 		});
 	});
 
@@ -39,7 +38,6 @@ describe("createTrackedSignal", () => {
 			expect(events.length).toBe(1);
 			expect(events[0].type).toBe("signal-create");
 			expect(events[0].data).toEqual({ value: 10 });
-
 		});
 	});
 
@@ -56,7 +54,6 @@ describe("createTrackedSignal", () => {
 			expect(events.length).toBe(1);
 			expect(events[0].type).toBe("signal-read");
 			expect(events[0].data).toEqual({ value: 5 });
-
 		});
 	});
 
@@ -75,7 +72,6 @@ describe("createTrackedSignal", () => {
 			const writeEvent = events.find((e) => e.type === "signal-write");
 			expect(writeEvent).toBeDefined();
 			expect(writeEvent?.data).toEqual({ previousValue: 0, newValue: 10 });
-
 		});
 	});
 
@@ -89,7 +85,6 @@ describe("createTrackedSignal", () => {
 			expect(node).toBeDefined();
 			expect(node?.name).toBeNull();
 			expect(node?.value).toBe(1);
-
 		});
 	});
 });
@@ -109,7 +104,6 @@ describe("createTrackedMemo", () => {
 
 			expect(memoNode).toBeDefined();
 			expect(memoNode?.name).toBe("doubled");
-
 		});
 	});
 
@@ -128,7 +122,6 @@ describe("createTrackedMemo", () => {
 
 			expect(startEvent).toBeDefined();
 			expect(endEvent).toBeDefined();
-
 		});
 	});
 
@@ -142,7 +135,6 @@ describe("createTrackedMemo", () => {
 			const depEdges = edges.filter((e) => e.type === "dependency");
 
 			expect(depEdges.length).toBe(2);
-
 		});
 	});
 
@@ -164,7 +156,6 @@ describe("createTrackedMemo", () => {
 			expect(reEvalStart.length).toBeGreaterThanOrEqual(1);
 
 			expect(doubled()).toBe(10);
-
 		});
 	});
 });
@@ -189,7 +180,6 @@ describe("createTrackedEffect", () => {
 
 			expect(effectNode).toBeDefined();
 			expect(effectNode?.name).toBe("logger");
-
 		});
 	});
 
@@ -204,7 +194,7 @@ describe("createTrackedEffect", () => {
 			});
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			unsubscribe();
 
@@ -230,7 +220,7 @@ describe("createTrackedEffect", () => {
 			});
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edges = Array.from(tracker.getEdges().values());
 			const depEdges = edges.filter((e) => e.type === "dependency");
@@ -263,7 +253,6 @@ describe("createTrackedEffect", () => {
 			const nodes = Array.from(tracker.getNodes().values());
 			const effectNode = nodes.find((n) => n.name === "disposable");
 			expect(effectNode?.disposedAt).not.toBeNull();
-
 		});
 	});
 
@@ -280,7 +269,7 @@ describe("createTrackedEffect", () => {
 			);
 
 			// Allow effect to run in next microtask
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edges = Array.from(tracker.getEdges().values());
 			const ownershipEdges = edges.filter((e) => e.type === "ownership");
@@ -313,7 +302,7 @@ describe("Edge Cases", () => {
 				{ name: "conditionalMemo" },
 			);
 
-			await new Promise((resolve) => queueMicrotask(resolve));
+			await new Promise<void>((resolve) => queueMicrotask(resolve));
 
 			const edgesBefore = Array.from(tracker.getEdges().values());
 			const conditionNodeId = Array.from(tracker.getNodes().values()).find(
@@ -355,7 +344,6 @@ describe("Edge Cases", () => {
 			expect(effectNode?.name).toBeNull();
 
 			expect(nodes.length).toBe(3);
-
 		});
 	});
 });

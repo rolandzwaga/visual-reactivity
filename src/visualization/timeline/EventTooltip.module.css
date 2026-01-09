@@ -1,0 +1,25 @@
+.tooltip {
+	background: rgba(0, 0, 0, 0.9);
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 4px;
+	font-size: 12px;
+	line-height: 1.4;
+	z-index: 1000;
+	white-space: nowrap;
+}
+
+.type {
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.timestamp {
+	color: #a0a0a0;
+	font-size: 11px;
+}
+
+.node {
+	color: #a0a0a0;
+	font-size: 11px;
+}

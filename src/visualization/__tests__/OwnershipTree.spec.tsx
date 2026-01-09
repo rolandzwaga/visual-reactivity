@@ -1,6 +1,7 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 import { tracker } from "../../instrumentation";
+import type { ReactiveNode } from "../../types/nodes";
 import { OwnershipTree } from "../OwnershipTree";
 
 vi.mock("../../instrumentation", () => ({
@@ -55,7 +56,9 @@ describe("OwnershipTree", () => {
 			],
 		]);
 
-		vi.mocked(tracker.getNodes).mockReturnValue(mockNodes as any);
+		vi.mocked(tracker.getNodes).mockReturnValue(
+			mockNodes as ReadonlyMap<string, ReactiveNode>,
+		);
 		vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 		const { container } = render(() => <OwnershipTree />);
@@ -83,7 +86,9 @@ describe("OwnershipTree", () => {
 
 		const mockMap = new Map();
 		mockMap.set("signal-1", node);
-		vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+		vi.mocked(tracker.getNodes).mockReturnValue(
+			mockMap as ReadonlyMap<string, ReactiveNode>,
+		);
 		vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 		const { container } = render(() => (
@@ -169,7 +174,9 @@ describe("OwnershipTree", () => {
 			mockMap.set("level1", level1);
 			mockMap.set("level2", level2);
 			mockMap.set("level3", level3);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			render(() => <OwnershipTree />);
@@ -213,7 +220,9 @@ describe("OwnershipTree", () => {
 			const mockMap = new Map();
 			mockMap.set("parent", parent);
 			mockMap.set("child", child);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			const { container } = render(() => <OwnershipTree />);
@@ -243,7 +252,9 @@ describe("OwnershipTree", () => {
 
 			const mockMap = new Map();
 			mockMap.set("root-1", rootNode);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			render(() => <OwnershipTree />);
@@ -287,7 +298,9 @@ describe("OwnershipTree", () => {
 			const mockMap = new Map();
 			mockMap.set("parent", parent);
 			mockMap.set("child", child);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			render(() => <OwnershipTree />);
@@ -313,7 +326,9 @@ describe("OwnershipTree", () => {
 
 			const mockMap = new Map();
 			mockMap.set("root-1", rootNode);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			render(() => <OwnershipTree />);
@@ -343,7 +358,9 @@ describe("OwnershipTree", () => {
 
 			const mockMap = new Map();
 			mockMap.set("signal-1", node);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			const { container } = render(() => (
@@ -374,7 +391,9 @@ describe("OwnershipTree", () => {
 
 			const mockMap = new Map();
 			mockMap.set("parent", parent);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			const { container } = render(() => <OwnershipTree />);
@@ -402,7 +421,9 @@ describe("OwnershipTree", () => {
 
 			const mockMap = new Map();
 			mockMap.set("disposed-1", disposedNode);
-			vi.mocked(tracker.getNodes).mockReturnValue(mockMap as any);
+			vi.mocked(tracker.getNodes).mockReturnValue(
+				mockMap as ReadonlyMap<string, ReactiveNode>,
+			);
 			vi.mocked(tracker.subscribe).mockReturnValue(() => {});
 
 			const { container } = render(() => <OwnershipTree />);

@@ -10,7 +10,7 @@ export interface HierarchyLayoutOptions {
 	nodeHeight: number; // Vertical spacing between parent/child levels (dy)
 
 	// Separation function
-	separation?: (a: any, b: any) => number; // Custom separation multiplier
+	separation?: (a: unknown, b: unknown) => number;
 
 	// Multiple trees
 	treeVerticalSpacing: number; // Space between separate root trees

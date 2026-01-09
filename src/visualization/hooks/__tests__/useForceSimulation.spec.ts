@@ -23,10 +23,7 @@ function createMockNode(id: string): GraphNode {
 describe("useForceSimulation", () => {
 	it("creates a force simulation from initial nodes", async () => {
 		await testInRoot(async () => {
-			const [nodes] = createSignal([
-				createMockNode("a"),
-				createMockNode("b"),
-			]);
+			const [nodes] = createSignal([createMockNode("a"), createMockNode("b")]);
 			const [edges] = createSignal<GraphEdge[]>([]);
 
 			const { simulation } = useForceSimulation(nodes, edges);
@@ -67,7 +64,6 @@ describe("useForceSimulation", () => {
 
 			expect(typeof stop).toBe("function");
 			stop();
-
 		});
 	});
 
@@ -79,7 +75,6 @@ describe("useForceSimulation", () => {
 			const { restart } = useForceSimulation(nodes, edges);
 
 			expect(typeof restart).toBe("function");
-
 		});
 	});
 

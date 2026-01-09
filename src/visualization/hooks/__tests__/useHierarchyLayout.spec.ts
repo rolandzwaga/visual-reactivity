@@ -31,7 +31,6 @@ describe("useHierarchyLayout", () => {
 
 			expect(layout.roots()).toEqual([]);
 			expect(layout.allNodes()).toEqual([]);
-
 		}));
 
 	it("should identify root nodes (owner === null)", () =>
@@ -50,7 +49,6 @@ describe("useHierarchyLayout", () => {
 
 			expect(roots).toHaveLength(1);
 			expect(roots[0].data.id).toBe("root-1");
-
 		}));
 
 	it("should build hierarchy from owner/owned relationships", () =>
@@ -75,7 +73,6 @@ describe("useHierarchyLayout", () => {
 			expect(roots[0].children).toHaveLength(2);
 			expect(roots[0].children?.[0].data.id).toBe("child-1");
 			expect(roots[0].children?.[1].data.id).toBe("child-2");
-
 		}));
 
 	it("should handle multiple separate trees", () =>
@@ -93,7 +90,6 @@ describe("useHierarchyLayout", () => {
 			const roots = layout.roots();
 
 			expect(roots).toHaveLength(2);
-
 		}));
 
 	it("should calculate tree dimensions", () =>
@@ -113,7 +109,6 @@ describe("useHierarchyLayout", () => {
 
 			expect(layout.treeWidth()).toBeGreaterThan(0);
 			expect(layout.treeHeight()).toBeGreaterThan(0);
-
 		}));
 
 	it("should include all nodes in allNodes accessor", () =>
@@ -133,6 +128,5 @@ describe("useHierarchyLayout", () => {
 			const allNodes = layout.allNodes();
 
 			expect(allNodes).toHaveLength(2);
-
 		}));
 });

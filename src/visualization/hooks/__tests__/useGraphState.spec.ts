@@ -21,7 +21,6 @@ describe("useGraphState", () => {
 			expect(state.edges()).toEqual([]);
 			expect(state.selectedNodeId()).toBeNull();
 			expect(state.hoveredNodeId()).toBeNull();
-
 		});
 	});
 
@@ -35,7 +34,6 @@ describe("useGraphState", () => {
 			expect(state.nodes()).toHaveLength(1);
 			expect(state.nodes()[0].id).toBe("test-1");
 			expect(state.nodes()[0].data).toBe(node);
-
 		});
 	});
 
@@ -49,7 +47,6 @@ describe("useGraphState", () => {
 
 			state.removeNode("test-1");
 			expect(state.nodes()).toHaveLength(0);
-
 		});
 	});
 
@@ -66,7 +63,6 @@ describe("useGraphState", () => {
 			expect(state.edges()).toHaveLength(1);
 			expect(state.edges()[0].source).toBe("a");
 			expect(state.edges()[0].target).toBe("b");
-
 		});
 	});
 
@@ -83,7 +79,6 @@ describe("useGraphState", () => {
 
 			state.removeEdge("a", "b");
 			expect(state.edges()).toHaveLength(0);
-
 		});
 	});
 
@@ -96,7 +91,6 @@ describe("useGraphState", () => {
 
 			state.setSelectedNode(null);
 			expect(state.selectedNodeId()).toBeNull();
-
 		});
 	});
 
@@ -109,7 +103,6 @@ describe("useGraphState", () => {
 
 			state.setHoveredNode(null);
 			expect(state.hoveredNodeId()).toBeNull();
-
 		});
 	});
 
@@ -131,7 +124,6 @@ describe("useGraphState", () => {
 			state.removeNode("b");
 
 			expect(state.edges()).toHaveLength(0);
-
 		});
 	});
 
@@ -148,7 +140,6 @@ describe("useGraphState", () => {
 
 			const notFound = state.getNodeById("nonexistent");
 			expect(notFound).toBeUndefined();
-
 		});
 	});
 });
