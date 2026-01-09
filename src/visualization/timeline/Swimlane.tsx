@@ -27,11 +27,15 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 		}
 		return Array.from(batchMap.entries()).map(([batchId, events]) => {
 			const timestamps = events.map((e) => e.timestamp);
+			const startTime = Math.min(...timestamps);
+			const endTime = Math.max(...timestamps);
 			return {
 				batchId,
 				events,
-				startTime: Math.min(...timestamps),
-				endTime: Math.max(...timestamps),
+				startTime,
+				endTime,
+				duration: endTime - startTime,
+				eventCount: events.length,
 			};
 		});
 	});
@@ -72,7 +76,9 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 							id: batch.batchId,
 							startTime: batch.startTime,
 							endTime: batch.endTime,
+							duration: batch.duration,
 							eventIds: batch.events.map((e) => e.id),
+							eventCount: batch.eventCount,
 						}}
 					/>
 				)}
