@@ -531,6 +531,8 @@ export function DependencyGraph(props: DependencyGraphProps) {
 						)}
 					</For>
 				</g>
+
+				<g class="pattern-badges" />
 			</g>
 		</svg>
 	);
