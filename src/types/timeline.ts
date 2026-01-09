@@ -151,7 +151,7 @@ export interface PlaybackState {
 	/** Whether playback is active */
 	isPlaying: boolean;
 
-	/** Playback speed multiplier (0.5, 1, 2, 5) */
+	/** Playback speed multiplier (0.25, 0.5, 1, 2, 5) */
 	speed: number;
 
 	/** Playback mode */
@@ -162,6 +162,9 @@ export interface PlaybackState {
 
 	/** requestAnimationFrame ID for cancellation (null if not active) */
 	rafId: number | null;
+
+	/** Whether to loop playback */
+	loop?: boolean;
 }
 
 /**
@@ -536,6 +539,9 @@ export interface PlaybackControlsProps {
 
 	/** Callback for jump to end */
 	onJumpToEnd?: () => void;
+
+	/** Callback for toggle loop mode */
+	onToggleLoop?: () => void;
 }
 
 /**

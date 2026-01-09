@@ -49,11 +49,25 @@ export const PlaybackControls: Component<PlaybackControlsProps> = (props) => {
 				onChange={(e) => props.onSpeedChange?.(Number(e.target.value))}
 				class={styles.select}
 			>
+				<option value={0.25}>0.25x</option>
 				<option value={0.5}>0.5x</option>
 				<option value={1}>1x</option>
 				<option value={2}>2x</option>
 				<option value={5}>5x</option>
 			</select>
+			{props.onToggleLoop && (
+				<button
+					type="button"
+					onClick={props.onToggleLoop}
+					class={styles.button}
+					title="Toggle Loop Mode"
+					style={{
+						"background-color": props.playback.loop ? "#4CAF50" : undefined,
+					}}
+				>
+					🔁
+				</button>
+			)}
 		</div>
 	);
 };

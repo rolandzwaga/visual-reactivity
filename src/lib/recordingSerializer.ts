@@ -2,6 +2,31 @@ import type { ExportOptions, Recording } from "../types/replay";
 
 const CURRENT_VERSION = "1.0.0";
 
+function truncateValue(value: unknown, limit: number): unknown {
+	const str = JSON.stringify(value);
+	if (str.length <= limit) return value;
+	return `[Truncated: ${str.length} bytes, showing first ${limit} chars]${str.slice(0, limit)}`;
+}
+
+function processDataForExport(
+	data: any,
+	options: ExportOptions,
+): Record<string, unknown> {
+	const processed: Record<string, unknown> = {};
+
+	for (const [key, value] of Object.entries(data)) {
+		if (options.valueInclusion === "structure-only") {
+			continue;
+		} else if (options.valueInclusion === "truncated") {
+			processed[key] = truncateValue(value, options.truncationLimit);
+		} else {
+			processed[key] = value;
+		}
+	}
+
+	return processed;
+}
+
 export function exportRecording(
 	recording: Recording,
 	options: ExportOptions = {
@@ -10,39 +35,19 @@ export function exportRecording(
 		includeMetadata: true,
 	},
 ): string {
-	const processedEvents = recording.events.map((event) => {
-		const processedEvent = { ...event };
-
-		if (options.valueInclusion === "structure-only") {
-			if (processedEvent.data && typeof processedEvent.data === "object") {
-				(processedEvent.data as any).value =
-					"[Value removed for structure-only export]";
-			}
-		} else if (options.valueInclusion === "truncated") {
-			const eventString = JSON.stringify(event.data);
-			if (eventString.length > options.truncationLimit) {
-				(processedEvent.data as any).__truncated = true;
-				(processedEvent.data as any).__originalSize = eventString.length;
-			}
-		}
-
-		return processedEvent;
-	});
+	const processedEvents = recording.events.map((event) => ({
+		...event,
+		data: processDataForExport(event.data, options),
+	}));
 
 	const exportData = {
 		formatVersion: CURRENT_VERSION,
-		metadata: {
-			name: recording.name,
-			dateCreated: recording.dateCreated,
-			eventCount: recording.eventCount,
-			duration: recording.duration,
-			appVersion: recording.version,
-			nodeTypes: Array.from(
-				new Set(recording.events.map((e) => e.type.split("-")[0])),
-			),
-		},
+		name: recording.name,
+		dateCreated: recording.dateCreated,
+		eventCount: recording.eventCount,
+		duration: recording.duration,
+		appVersion: recording.version,
 		events: processedEvents,
-		exportOptions: options,
 	};
 
 	return JSON.stringify(exportData, null, 2);
@@ -52,54 +57,49 @@ export function importRecording(jsonString: string): Recording {
 	const data = JSON.parse(jsonString);
 
 	if (!data.formatVersion) {
-		throw new Error("Missing formatVersion field in recording file");
+		throw new Error("Invalid recording format");
 	}
 
 	const [importedMajor] = data.formatVersion.split(".").map(Number);
 	const [currentMajor] = CURRENT_VERSION.split(".").map(Number);
 
 	if (importedMajor !== currentMajor) {
-		console.warn(
-			`Version mismatch: imported ${data.formatVersion}, current ${CURRENT_VERSION}`,
-		);
+		throw new Error("Unsupported format version");
 	}
 
-	if (!data.metadata || !Array.isArray(data.events)) {
-		throw new Error("Invalid recording format: missing metadata or events");
+	if (!data.name || !Array.isArray(data.events)) {
+		throw new Error("Invalid recording format");
 	}
 
 	return {
 		id: 0,
-		name: data.metadata.name,
-		dateCreated: data.metadata.dateCreated,
+		name: data.name,
+		dateCreated: data.dateCreated || Date.now(),
 		eventCount: data.events.length,
-		duration: data.metadata.duration,
+		duration: data.duration || 0,
 		version: data.formatVersion,
 		events: data.events,
 	};
 }
 
-export function validateFormat(jsonString: string): {
-	valid: boolean;
-	error?: string;
-} {
+export function validateFormat(jsonString: string): boolean {
 	try {
 		const data = JSON.parse(jsonString);
 
 		if (!data.formatVersion) {
-			return { valid: false, error: "Missing formatVersion" };
+			return false;
 		}
 
-		if (!data.metadata) {
-			return { valid: false, error: "Missing metadata" };
+		if (!data.name) {
+			return false;
 		}
 
 		if (!Array.isArray(data.events)) {
-			return { valid: false, error: "Missing or invalid events array" };
+			return false;
 		}
 
-		return { valid: true };
-	} catch (err: any) {
-		return { valid: false, error: err.message };
+		return true;
+	} catch {
+		return false;
 	}
 }

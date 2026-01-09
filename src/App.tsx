@@ -7,7 +7,9 @@ import { createReplayStore } from "./stores/replayStore";
 import { createSelectionStore } from "./stores/selectionStore";
 import { DependencyGraph, DetailPanel, OwnershipTree } from "./visualization";
 import { AnalysisPanel } from "./visualization/AnalysisPanel";
+import { ReplayModeIndicator } from "./visualization/ReplayModeIndicator";
 import { TimelineView } from "./visualization/TimelineView";
+import { useReplayState } from "./visualization/hooks/useReplayState";
 import type { DetailPanelData } from "./visualization/types";
 
 type ViewMode = "graph" | "tree" | "timeline";
@@ -23,6 +25,7 @@ export function App() {
 	const patternStore = createPatternStore();
 	const replayStore = createReplayStore();
 	const recordingStore = createRecordingStore();
+	const replayState = useReplayState(replayStore);
 	const _patternDetector = createPatternDetector(
 		() => Array.from(tracker.getNodes().values()),
 		() =>
@@ -53,6 +56,21 @@ export function App() {
 
 	return (
 		<div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+			<Show when={replayState().active}>
+				<div
+					style={{
+						position: "absolute",
+						top: "16px",
+						left: "16px",
+						"z-index": "100",
+					}}
+				>
+					<ReplayModeIndicator
+						replayStore={replayStore}
+						onExit={() => replayStore.clearCursor()}
+					/>
+				</div>
+			</Show>
 			<div
 				style={{
 					position: "absolute",
