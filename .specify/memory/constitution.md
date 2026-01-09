@@ -1,44 +1,50 @@
 <!--
 =============================================================================
-SYNC IMPACT REPORT - Constitution Update 1.0.0 → 1.1.0
+SYNC IMPACT REPORT - Constitution Update 1.1.0 → 1.1.1
 =============================================================================
 
-Version Change: 1.0.0 → 1.1.0 (MINOR - New principle added)
+Version Change: 1.1.0 → 1.1.1 (PATCH - Clarification of existing principle)
 Date: 2026-01-09
 
 Changes:
 --------
-- ADDED: Principle XXI. Testing Guide Reference (NON-NEGOTIABLE)
-  - Requires specs/TESTING-GUIDE.md in context before ANY test-related tasks
-  - Mandates use of centralized test helpers (testInRoot, useMockDate, etc.)
-  - Prevents test anti-patterns (manual createRoot, React patterns, etc.)
-  - Enforces explicit todo items in specs/plans/tasks when tests involved
+- STRENGTHENED: Principle XV. Zero Failing Tests Policy (NON-NEGOTIABLE)
+  - Added explicit "BLOCKER" language for spec completion
+  - Clarified that failing tests prevent declaring specs "finished" or "complete"
+  - Enhanced enforcement section with completion gate requirements
+  - Made it unmistakably clear: no spec can be marked complete with failing tests
+- UPDATED: Development Workflow section
+  - Step 8 now explicitly states: "All Tests Passing (BLOCKER)"
+  - Step 9 now explicitly states: "Quality Gates (BLOCKER)"
+  - Both steps now clearly indicate failures BLOCK declaring spec finished
 
 Modified Principles:
 --------------------
-None (this is a new addition)
+- Principle XV: Enhanced with explicit blocker language and completion gate enforcement
+- Development Workflow: Added explicit blocker language to steps 8 and 9
 
 Templates Requiring Updates:
 -----------------------------
-✅ spec-template.md - Updated with testing guide consultation requirement
-✅ plan-template.md - Updated constitution check section with testing guide gate
-✅ tasks-template.md - Updated test task sections with testing guide consultation
+✅ spec-template.md - Already has testing requirements; language is clear
+✅ plan-template.md - Already has testing guide gate; no changes needed
+✅ tasks-template.md - Already has testing reminders; no changes needed
 
 Follow-up TODOs:
 ----------------
 None
 
-Rationale for MINOR Version Bump:
+Rationale for PATCH Version Bump:
 ----------------------------------
-New principle added without removing or redefining existing principles.
-Backward compatible - enhances testing discipline without invalidating prior work.
+This is a clarification and strengthening of existing Principle XV guidance.
+No new principles added, no principles removed or redefined.
+Backward compatible - reinforces existing testing discipline without changing substance.
 
 =============================================================================
 -->
 
 # Visual-Reactivity Project Constitution
 
-**Version**: 1.1.0
+**Version**: 1.1.1
 **Purpose**: Define non-negotiable development principles, standards, and governance for the Visual-Reactivity project
 
 ---
@@ -273,10 +279,17 @@ When researching implementations, accuracy is critical:
 
 ### XV. Zero Failing Tests Policy (NON-NEGOTIABLE)
 
-**CRITICAL**: EVERY spec delivered with ALL tests passing. ANY failing test is IMMEDIATE problem.
+**CRITICAL**: EVERY spec delivered with ALL tests passing. ANY failing test is IMMEDIATE problem and ABSOLUTE BLOCKER.
+
+**COMPLETION BLOCKER - Specs Cannot Be Declared "Finished" or "Complete" With Failing Tests**:
+- A spec is **NOT FINISHED** if any test fails
+- A spec is **NOT COMPLETE** if any test fails
+- You **CANNOT** declare a spec done with failing tests
+- You **CANNOT** mark implementation complete with failing tests
+- Failing tests are a **HARD BLOCKER** for spec completion
 
 **Absolute Requirements**:
-- **ALL tests MUST pass** before spec is complete
+- **ALL tests MUST pass** before spec can be declared finished/complete
 - **ALL tests MUST pass** before ANY commit
 - **ALL tests MUST pass** in CI/CD before merge
 - Failing test is YOUR responsibility to fix immediately
@@ -287,6 +300,11 @@ When researching implementations, accuracy is critical:
 3. **FIX** test or code causing failure
 4. **VERIFY** all tests pass
 5. If unable to fix after 5 attempts, **CONSULT USER**
+
+**Enforcement at Spec Completion**:
+- Before declaring spec finished: run `npm test` and verify ALL tests pass
+- Document test results showing 100% passing tests
+- NO EXCEPTIONS - even a single failing test blocks completion
 
 ### XVI. Technical Overview Reference (NON-NEGOTIABLE)
 
@@ -458,8 +476,8 @@ vi.mock('./store', async () => {
    - Fix all issues
    - Commit atomically
 7. **Coverage Verification**: Verify 80% threshold after spec completion
-8. **All Tests Passing**: Ensure ALL tests pass before completion
-9. **Quality Gates**: Run ALL quality gate commands (lint:css, check, typecheck)
+8. **All Tests Passing (BLOCKER)**: Ensure ALL tests pass before completion - failing tests BLOCK declaring spec finished
+9. **Quality Gates (BLOCKER)**: Run ALL quality gate commands (lint:css, check, typecheck) - failures BLOCK completion
 10. **Update Technical Docs**: Document new utilities/patterns in CLAUDE.md
 11. **Review**: Submit PR with all checks passing
 
@@ -519,6 +537,6 @@ Exceptions are **extremely rare** and require:
 
 ---
 
-**Version**: 1.1.0
+**Version**: 1.1.1
 **Ratified**: 2026-01-08
 **Last Amended**: 2026-01-09

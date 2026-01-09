@@ -1,5 +1,6 @@
-import { type Component, For } from "solid-js";
+import { type Component, createMemo, For } from "solid-js";
 import type { SwimlaneProps } from "../../types/timeline";
+import { BatchIndicator } from "./BatchIndicator";
 import { EventMark } from "./EventMark";
 import styles from "./Swimlane.module.css";
 
@@ -13,6 +14,27 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 		if (props.isSelected) return 0.1;
 		return 0.05;
 	};
+
+	const batches = createMemo(() => {
+		const batchMap = new Map<string, typeof props.events>();
+		for (const event of props.events) {
+			if (event.batchId) {
+				if (!batchMap.has(event.batchId)) {
+					batchMap.set(event.batchId, []);
+				}
+				batchMap.get(event.batchId)!.push(event);
+			}
+		}
+		return Array.from(batchMap.entries()).map(([batchId, events]) => {
+			const timestamps = events.map((e) => e.timestamp);
+			return {
+				batchId,
+				events,
+				startTime: Math.min(...timestamps),
+				endTime: Math.max(...timestamps),
+			};
+		});
+	});
 
 	return (
 		<g
@@ -38,6 +60,23 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 			>
 				{props.swimlane.nodeName || props.swimlane.nodeId}
 			</text>
+
+			<For each={batches()}>
+				{(batch) => (
+					<BatchIndicator
+						x1={props.scale.scale(batch.startTime)}
+						x2={props.scale.scale(batch.endTime)}
+						y={0}
+						height={props.swimlane.height}
+						batch={{
+							id: batch.batchId,
+							startTime: batch.startTime,
+							endTime: batch.endTime,
+							eventIds: batch.events.map((e) => e.id),
+						}}
+					/>
+				)}
+			</For>
 
 			<For each={props.events}>
 				{(event) => (
