@@ -11,6 +11,8 @@ import { tracker } from "../instrumentation";
 import type { ReactiveNode } from "../types";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useHierarchyLayout } from "./hooks/useHierarchyLayout";
+import { useKeyboardNav } from "./hooks/useKeyboardNav";
+import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useTreeState } from "./hooks/useTreeState";
 import { Notification } from "./Notification";
 import { EffectNode, MemoNode, SignalNode } from "./nodes";
@@ -22,6 +24,7 @@ export interface OwnershipTreeProps {
 	selectedNodeId?: string | null;
 	onSelectNode?: (nodeId: string | null) => void;
 	class?: string;
+	selection?: import("../types/selection").SelectionStore;
 }
 
 const DEFAULT_EXPANSION_DEPTH = 2;
@@ -49,6 +52,14 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 		DEFAULT_EXPANSION_DEPTH,
 	);
 	const state = useTreeState(initialExpanded);
+
+	const selectionSync = props.selection
+		? useSelectionSync("tree", props.selection)
+		: null;
+
+	const keyboardNav = props.selection
+		? useKeyboardNav("tree", props.selection)
+		: null;
 
 	const [contextMenu, setContextMenu] = createSignal<{
 		x: number;
@@ -89,6 +100,28 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 					block: "center",
 					inline: "center",
 				});
+			}
+		}
+	});
+
+	createEffect(() => {
+		if (selectionSync) {
+			const selectedIds = selectionSync.highlightedNodeIds();
+			for (const selectedId of selectedIds) {
+				const node = nodes().get(selectedId);
+				if (node?.owner) {
+					let currentId: string | null = node.owner;
+					while (currentId) {
+						const idToExpand = currentId;
+						state.setExpandedNodes((prev) => {
+							const next = new Set(prev);
+							next.add(idToExpand);
+							return next;
+						});
+						const parentNode = nodes().get(currentId);
+						currentId = parentNode?.owner ?? null;
+					}
+				}
 			}
 		}
 	});
@@ -240,12 +273,20 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 									fy: null,
 									data: treeNode.data,
 								}}
-								isSelected={props.selectedNodeId === treeNode.data.id}
+								isSelected={
+									selectionSync
+										? selectionSync.isNodeSelected(treeNode.data.id)
+										: props.selectedNodeId === treeNode.data.id
+								}
 								isHovered={state.hoveredNodeId() === treeNode.data.id}
 								isStale={treeNode.data.isStale}
 								isExecuting={treeNode.data.isExecuting}
-								onClick={() => {
-									props.onSelectNode?.(treeNode.data.id);
+								onClick={(nodeId, event) => {
+									if (selectionSync && event) {
+										selectionSync.handleNodeClick(nodeId, event);
+									} else {
+										props.onSelectNode?.(nodeId);
+									}
 								}}
 								onMouseEnter={() => {
 									state.setHoveredNodeId(treeNode.data.id);
@@ -337,6 +378,8 @@ export function OwnershipTree(props: OwnershipTreeProps) {
 					class={styles.svg}
 					width={layout.treeWidth()}
 					height={layout.treeHeight()}
+					tabindex={props.selection ? 0 : undefined}
+					onKeyDown={(e) => keyboardNav?.handleKeyDown(e)}
 				>
 					<For each={layout.roots()}>
 						{(root) => (

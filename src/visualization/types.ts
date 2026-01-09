@@ -108,6 +108,8 @@ export interface DependencyGraphProps {
 	height?: number;
 	/** CSS class for the container */
 	class?: string;
+	/** Selection store for cross-view synchronization */
+	selection?: import("../types/selection").SelectionStore;
 }
 
 /**
@@ -131,7 +133,7 @@ export interface NodeShapeProps {
 	/** Whether this node is currently hovered */
 	isHovered: boolean;
 	/** Callback when node is clicked */
-	onClick: (nodeId: string) => void;
+	onClick: (nodeId: string, event?: MouseEvent) => void;
 	/** Callback when mouse enters node */
 	onMouseEnter: (nodeId: string) => void;
 	/** Callback when mouse leaves node */

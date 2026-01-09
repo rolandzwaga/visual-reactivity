@@ -78,7 +78,7 @@ describe("MemoNode", () => {
 
 		const group = container.querySelector("g");
 		group?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-		expect(onClick).toHaveBeenCalledWith("test-click");
+		expect(onClick).toHaveBeenCalledWith("test-click", expect.any(MouseEvent));
 	});
 
 	it("shows visual difference when selected", () => {

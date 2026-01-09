@@ -29,7 +29,7 @@ export function EffectNode(props: NodeShapeProps) {
 	return (
 		<g
 			transform={`translate(${props.node.x}, ${props.node.y}) scale(${scale()})`}
-			onClick={() => props.onClick(props.node.id)}
+			onClick={(e) => props.onClick(props.node.id, e)}
 			onMouseEnter={() => props.onMouseEnter(props.node.id)}
 			onMouseLeave={() => props.onMouseLeave()}
 			style={{ cursor: "pointer", filter: grayscale() }}

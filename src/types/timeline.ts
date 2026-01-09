@@ -429,6 +429,9 @@ export interface TimelineViewProps {
 
 	/** Callback when playback state changes */
 	onPlaybackChange?: PlaybackStateCallback;
+
+	/** Selection store for cross-view synchronization */
+	selection?: import("./selection").SelectionStore;
 }
 
 /**
@@ -452,6 +455,9 @@ export interface SwimlaneProps {
 
 	/** Callback when event hovered */
 	onEventHover?: EventHoverCallback;
+
+	/** Callback when swimlane clicked */
+	onSwimlaneClick?: (event: MouseEvent) => void;
 }
 
 /**

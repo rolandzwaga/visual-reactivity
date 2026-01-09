@@ -53,6 +53,8 @@ export const Swimlane: Component<SwimlaneProps> = (props) => {
 				height={props.swimlane.height}
 				fill={props.swimlane.color}
 				opacity={getBgOpacity()}
+				style={{ cursor: props.onSwimlaneClick ? "pointer" : "default" }}
+				onClick={(e) => props.onSwimlaneClick?.(e)}
 			/>
 
 			<text

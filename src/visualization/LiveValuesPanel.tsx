@@ -1,14 +1,9 @@
 import { type Component, createSignal, Show } from "solid-js";
+import type { LiveValuesPanelProps } from "../types/panel";
+import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useSignalList } from "./hooks/useSignalList";
 import styles from "./LiveValuesPanel.module.css";
 import { SignalList } from "./list/SignalList";
-
-export interface LiveValuesPanelProps {
-	isVisible: boolean;
-	width: number;
-	onVisibilityChange: (visible: boolean) => void;
-	onWidthChange: (width: number) => void;
-}
 
 const MIN_WIDTH = 200;
 const MAX_WIDTH_RATIO = 0.5; // 50% of viewport width
@@ -23,7 +18,10 @@ export const LiveValuesPanel: Component<LiveValuesPanelProps> = (props) => {
 	);
 	const [_isResizing, setIsResizing] = createSignal(false);
 
-	// Get signals from tracker
+	const selectionSync = props.selection
+		? useSelectionSync("list", props.selection)
+		: null;
+
 	const { signals } = useSignalList();
 
 	// Handle resize start
@@ -99,9 +97,20 @@ export const LiveValuesPanel: Component<LiveValuesPanelProps> = (props) => {
 				<div class={styles.content}>
 					<SignalList
 						signals={signals()}
-						selectedId={selectedSignalId()}
-						onSignalClick={handleSignalClick}
+						selectedId={
+							selectionSync
+								? (Array.from(selectionSync.highlightedNodeIds())[0] ?? null)
+								: selectedSignalId()
+						}
+						onSignalClick={(id, event) => {
+							if (selectionSync && event) {
+								selectionSync.handleNodeClick(id, event);
+							} else {
+								handleSignalClick(id);
+							}
+						}}
 						onValueEdit={handleValueEdit}
+						selectionSync={selectionSync}
 					/>
 				</div>
 			</div>

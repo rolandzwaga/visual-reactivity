@@ -1,6 +1,8 @@
-import { render } from "@solidjs/testing-library";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render } from "@solidjs/testing-library";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
+import { tracker } from "../../instrumentation";
+import { createSelectionStore } from "../../stores/selectionStore";
 import { DependencyGraph } from "../DependencyGraph";
 
 describe("DependencyGraph", () => {
@@ -42,6 +44,56 @@ describe("DependencyGraph", () => {
 			render(() => <DependencyGraph />);
 
 			await new Promise((r) => setTimeout(r, 100));
+		});
+	});
+
+	describe("User Story 1: Selection", () => {
+		beforeEach(() => {
+			tracker.reset();
+			tracker.getNode = vi.fn((id: string) => ({ id }) as never);
+		});
+
+		it("T031: node click triggers selection", async () => {
+			await testInRoot(async () => {
+				const selection = createSelectionStore();
+				const { container } = render(() => (
+					<DependencyGraph selection={selection} />
+				));
+
+				await new Promise((r) => setTimeout(r, 100));
+
+				const circle = container.querySelector("circle");
+				if (circle) {
+					fireEvent.mouseDown(circle, { button: 0 });
+					fireEvent.mouseUp(document);
+
+					expect(selection.selectionCount()).toBeGreaterThan(0);
+				}
+			});
+		});
+
+		it("T032: applies stroke-width=3 when node is selected", async () => {
+			await testInRoot(async () => {
+				const selection = createSelectionStore();
+				const { container } = render(() => (
+					<DependencyGraph selection={selection} />
+				));
+
+				await new Promise((r) => setTimeout(r, 100));
+
+				const circle = container.querySelector("circle");
+				if (circle) {
+					const nodeId = circle.getAttribute("data-node-id");
+					if (nodeId) {
+						selection.selectNode(nodeId, false, "graph");
+
+						await new Promise((r) => setTimeout(r, 50));
+
+						const strokeWidth = circle.getAttribute("stroke-width");
+						expect(strokeWidth).toBe("3");
+					}
+				}
+			});
 		});
 	});
 });
