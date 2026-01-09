@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
 import { render, screen } from "@solidjs/testing-library";
+import { describe, expect, test } from "vitest";
 import { App } from "../App";
 
 describe("App - Timeline Integration", () => {

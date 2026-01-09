@@ -115,6 +115,7 @@ export function App() {
 					width={window.innerWidth}
 					height={window.innerHeight}
 					selection={selection}
+					replayStore={replayStore}
 				/>
 			</Show>
 
@@ -125,6 +126,7 @@ export function App() {
 					selectedNodeId={selectedNodeId()}
 					onSelectNode={setSelectedNodeId}
 					selection={selection}
+					replayStore={replayStore}
 				/>
 			</Show>
 

@@ -110,6 +110,8 @@ export interface DependencyGraphProps {
 	class?: string;
 	/** Selection store for cross-view synchronization */
 	selection?: import("../types/selection").SelectionStore;
+	/** Replay store for historical state */
+	replayStore?: import("../stores/replayStore").ReplayStore;
 }
 
 /**

@@ -137,7 +137,7 @@ describe("historicalState", () => {
 				timestamp: 100,
 				data: {
 					sourceId: "signal-1",
-					},
+				},
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
