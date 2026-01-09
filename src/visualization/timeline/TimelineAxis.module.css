@@ -1,0 +1,16 @@
+.axis {
+	font-size: 11px;
+	color: #666;
+}
+
+.axis .domain {
+	stroke: #ccc;
+}
+
+.axis .tick line {
+	stroke: #e5e5e5;
+}
+
+.axis .tick text {
+	fill: #666;
+}

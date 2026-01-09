@@ -1,0 +1,12 @@
+.swimlane {
+	transition: opacity 0.2s ease;
+}
+
+.swimlane rect {
+	transition: opacity 0.2s ease;
+}
+
+.swimlane text {
+	pointer-events: none;
+	user-select: none;
+}

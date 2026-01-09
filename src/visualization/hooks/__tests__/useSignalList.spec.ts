@@ -24,7 +24,6 @@ describe("useSignalList", () => {
 			const { signals } = useSignalList();
 
 			expect(signals()).toEqual([]);
-
 		});
 	});
 
@@ -42,7 +41,6 @@ describe("useSignalList", () => {
 			expect(signalList[0].name).toBe("count");
 			expect(signalList[0].type).toBe("signal");
 			expect(signalList[0].currentValue).toBe(0);
-
 		});
 	});
 
@@ -59,7 +57,6 @@ describe("useSignalList", () => {
 			const signalList = signals();
 			expect(signalList[0].currentValue).toBe(42);
 			expect(signalList[0].updateCount).toBeGreaterThan(0);
-
 		});
 	});
 
@@ -81,7 +78,6 @@ describe("useSignalList", () => {
 			expect(memoEntry?.type).toBe("memo");
 			expect(memoEntry?.isEditable).toBe(false);
 			expect(memoEntry?.currentValue).toBe(10);
-
 		});
 	});
 
@@ -103,7 +99,6 @@ describe("useSignalList", () => {
 
 			await wait(10);
 			expect(signals().length).toBe(0);
-
 		});
 	});
 
@@ -121,7 +116,6 @@ describe("useSignalList", () => {
 			expect(signalList[0].name).toBe("alpha");
 			expect(signalList[1].name).toBe("beta");
 			expect(signalList[2].name).toBe("zebra");
-
 		});
 	});
 
@@ -137,7 +131,6 @@ describe("useSignalList", () => {
 			expect(signalList.length).toBe(1);
 			expect(signalList[0].name).toBeNull();
 			expect(signalList[0].id).toBeTruthy();
-
 		});
 	});
 
@@ -152,7 +145,6 @@ describe("useSignalList", () => {
 			const signalList = signals();
 			expect(signalList[0].serializedValue).toBeTruthy();
 			expect(signalList[0].serializedValue).toContain('"name":"test"');
-
 		});
 	});
 
@@ -169,7 +161,6 @@ describe("useSignalList", () => {
 
 			const signalList = signals();
 			expect(signalList[0].serializedValue).toBeNull();
-
 		});
 	});
 
@@ -190,7 +181,6 @@ describe("useSignalList", () => {
 
 			const updatedCount = signals()[0].updateCount;
 			expect(updatedCount).toBeGreaterThan(initialUpdateCount);
-
 		});
 	});
 
@@ -210,7 +200,6 @@ describe("useSignalList", () => {
 
 			const updatedTimestamp = signals()[0].lastUpdatedAt;
 			expect(updatedTimestamp).toBeGreaterThan(initialTimestamp);
-
 		});
 	});
 
@@ -229,7 +218,6 @@ describe("useSignalList", () => {
 				expect(signal).toBeDefined();
 				expect(signal?.currentValue).toBe(42);
 			}
-
 		});
 	});
 
@@ -250,7 +238,6 @@ describe("useSignalList", () => {
 
 				expect(signals()[0].currentValue).toBe(99);
 			}
-
 		});
 	});
 
@@ -269,7 +256,6 @@ describe("useSignalList", () => {
 
 			const signalList = signals();
 			expect(signalList[0].currentValue).toBe(99);
-
 		});
 	});
 });

@@ -4,7 +4,6 @@ import type { AnimationControllerOptions } from "../types";
 import { createAnimationController } from "../useAnimationController";
 
 describe("useAnimationController", () => {
-
 	describe("creation", () => {
 		it("should create controller with default options", () => {
 			testInRoot(() => {

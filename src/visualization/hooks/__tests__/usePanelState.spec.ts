@@ -34,7 +34,6 @@ describe("usePanelState", () => {
 
 			expect(preferences().isVisible).toBe(false);
 			expect(preferences().width).toBe(350);
-
 		});
 	});
 
@@ -49,7 +48,6 @@ describe("usePanelState", () => {
 
 			expect(preferences().isVisible).toBe(true);
 			expect(preferences().width).toBe(400);
-
 		});
 	});
 
@@ -106,7 +104,6 @@ describe("usePanelState", () => {
 			setWidth(100);
 
 			expect(preferences().width).toBe(200);
-
 		});
 	});
 
@@ -117,7 +114,6 @@ describe("usePanelState", () => {
 			setWidth(5000);
 
 			expect(preferences().width).toBe(2000);
-
 		});
 	});
 
@@ -132,7 +128,6 @@ describe("usePanelState", () => {
 
 			toggleVisibility();
 			expect(preferences().isVisible).toBe(false);
-
 		});
 	});
 
@@ -168,7 +163,6 @@ describe("usePanelState", () => {
 
 			// Should not throw
 			expect(() => setIsVisible(true)).not.toThrow();
-
 		});
 	});
 
@@ -183,7 +177,6 @@ describe("usePanelState", () => {
 
 			const updatedWidth = preferences().width;
 			expect(updatedWidth).toBe(400);
-
 		});
 	});
 });
