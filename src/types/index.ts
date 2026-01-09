@@ -76,3 +76,12 @@ export type {
 	ZoomCallback,
 } from "./timeline";
 export { EVENT_COLORS, NODE_COLORS, TIMELINE_DEFAULTS } from "./timeline";
+export type {
+	ExportOptions,
+	HistoricalGraphState,
+	HistoricalNode,
+	PlaybackControlState,
+	Recording,
+	RecordingMetadata,
+	ReplayState,
+} from "./replay";
