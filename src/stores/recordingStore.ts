@@ -8,11 +8,7 @@ import {
 } from "../lib/indexedDB";
 import { validateRecordingName } from "../lib/validation";
 import type { ReactivityEvent } from "../types/events";
-import type {
-	Recording,
-	RecordingMetadata,
-	ReplayState,
-} from "../types/replay";
+import type { Recording, RecordingMetadata } from "../types/replay";
 import type { ValidationError } from "../types/storage";
 
 export interface RecordingStore {

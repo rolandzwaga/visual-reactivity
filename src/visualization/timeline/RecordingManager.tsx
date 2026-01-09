@@ -46,8 +46,8 @@ export const RecordingManager: Component<RecordingManagerProps> = (props) => {
 			setSaveName("");
 			setError(null);
 			await loadRecordings();
-		} catch (err: any) {
-			setError(err.message);
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : String(err));
 		}
 	};
 

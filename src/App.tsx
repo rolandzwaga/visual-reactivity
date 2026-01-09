@@ -15,8 +15,8 @@ import { DemoPanel } from "./visualization/DemoPanel";
 import { useReplayState } from "./visualization/hooks/useReplayState";
 import { ReplayModeIndicator } from "./visualization/ReplayModeIndicator";
 import { TimelineView } from "./visualization/TimelineView";
-import { WelcomeMessage } from "./visualization/WelcomeMessage";
 import type { DetailPanelData } from "./visualization/types";
+import { WelcomeMessage } from "./visualization/WelcomeMessage";
 
 type ViewMode = "graph" | "tree" | "timeline";
 
@@ -112,7 +112,7 @@ export function App() {
 		}
 	};
 
-	const handleDemoError = (error: Error) => {
+	const _handleDemoError = (error: Error) => {
 		setDemoError(error);
 	};
 

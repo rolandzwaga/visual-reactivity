@@ -44,8 +44,10 @@ export const ExportImportControls: Component<ExportImportControlsProps> = (
 
 			URL.revokeObjectURL(url);
 			setError(null);
-		} catch (err: any) {
-			setError(`Export failed: ${err.message}`);
+		} catch (err: unknown) {
+			setError(
+				`Export failed: ${err instanceof Error ? err.message : String(err)}`,
+			);
 		}
 	};
 
@@ -61,8 +63,10 @@ export const ExportImportControls: Component<ExportImportControlsProps> = (
 			await props.recordingStore.save(recording.name, recording.events);
 			setError(null);
 			alert(`Imported "${recording.name}" successfully!`);
-		} catch (err: any) {
-			setError(`Import failed: ${err.message}`);
+		} catch (err: unknown) {
+			setError(
+				`Import failed: ${err instanceof Error ? err.message : String(err)}`,
+			);
 		}
 
 		input.value = "";

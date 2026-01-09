@@ -81,7 +81,7 @@
 }
 
 .demoItem.active {
-	background: var(--color-primary-light);
+	background: var(--color-bg-selected);
 	border-color: var(--color-primary);
 }
 

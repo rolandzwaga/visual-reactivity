@@ -1,5 +1,3 @@
-import type { Recording } from "./replay";
-
 export interface DBSchema {
 	name: string;
 	version: number;

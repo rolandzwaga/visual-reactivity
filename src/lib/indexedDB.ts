@@ -118,7 +118,7 @@ export async function getStorageQuota(): Promise<{
 	used: number;
 	available: number;
 }> {
-	if (navigator.storage && navigator.storage.estimate) {
+	if (navigator.storage?.estimate) {
 		const estimate = await navigator.storage.estimate();
 		return {
 			used: estimate.usage || 0,

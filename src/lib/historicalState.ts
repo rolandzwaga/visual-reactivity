@@ -1,5 +1,11 @@
-import type { ReactivityEvent } from "../types/events";
-import type { HistoricalGraphState, HistoricalNode } from "../types/replay";
+import type {
+	ReactivityEvent,
+	SignalCreateData,
+	SignalWriteData,
+	SubscriptionAddData,
+	SubscriptionRemoveData,
+} from "../types/events";
+import type { HistoricalGraphState } from "../types/replay";
 
 interface CacheEntry {
 	timestamp: number;
@@ -103,7 +109,7 @@ export function createStateReconstructor(
 	): void {
 		switch (event.type) {
 			case "signal-create": {
-				const signalData = event.data as any;
+				const signalData = event.data as SignalCreateData;
 				state.activeNodes.set(event.nodeId, {
 					node: {
 						id: event.nodeId,
@@ -118,7 +124,6 @@ export function createStateReconstructor(
 			}
 
 			case "computation-create": {
-				const compData = event.data as any;
 				state.activeNodes.set(event.nodeId, {
 					node: {
 						id: event.nodeId,
@@ -135,7 +140,7 @@ export function createStateReconstructor(
 			case "signal-write": {
 				const node = state.activeNodes.get(event.nodeId);
 				if (node) {
-					const writeData = event.data as any;
+					const writeData = event.data as SignalWriteData;
 					node.value = writeData.newValue;
 					node.lastUpdateTime = event.timestamp;
 				}
@@ -149,7 +154,7 @@ export function createStateReconstructor(
 			}
 
 			case "subscription-add": {
-				const subData = event.data as any;
+				const subData = event.data as SubscriptionAddData;
 				state.edges.push({
 					from: subData.sourceId,
 					to: event.nodeId,
@@ -159,7 +164,7 @@ export function createStateReconstructor(
 			}
 
 			case "subscription-remove": {
-				const subData = event.data as any;
+				const subData = event.data as SubscriptionRemoveData;
 				state.edges = state.edges.filter(
 					(e) => !(e.from === subData.sourceId && e.to === event.nodeId),
 				);
