@@ -133,6 +133,8 @@ export function App() {
 					width={window.innerWidth}
 					height={window.innerHeight}
 					selection={selection}
+					replayStore={replayStore}
+					recordingStore={recordingStore}
 				/>
 			</Show>
 

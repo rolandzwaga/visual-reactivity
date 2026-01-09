@@ -7,10 +7,42 @@ export const PlaybackControls: Component<PlaybackControlsProps> = (props) => {
 		<div class={styles.controls}>
 			<button
 				type="button"
+				onClick={props.onJumpToStart}
+				class={styles.button}
+				title="Jump to Start (Home)"
+			>
+				⏮
+			</button>
+			<button
+				type="button"
+				onClick={props.onStepBackward}
+				class={styles.button}
+				title="Step Backward (←)"
+			>
+				⏪
+			</button>
+			<button
+				type="button"
 				onClick={props.playback.isPlaying ? props.onPause : props.onPlay}
 				class={styles.button}
 			>
 				{props.playback.isPlaying ? "⏸" : "▶"}
+			</button>
+			<button
+				type="button"
+				onClick={props.onStepForward}
+				class={styles.button}
+				title="Step Forward (→)"
+			>
+				⏩
+			</button>
+			<button
+				type="button"
+				onClick={props.onJumpToEnd}
+				class={styles.button}
+				title="Jump to End (End)"
+			>
+				⏭
 			</button>
 			<select
 				value={props.playback.speed}

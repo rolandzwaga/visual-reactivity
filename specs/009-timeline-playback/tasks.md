@@ -110,24 +110,24 @@ Single project structure (from plan.md):
 
 > **REMINDER**: Consult `specs/TESTING-GUIDE.md` (from T005) before writing tests
 
-- [ ] T032 [P] [US2] Unit test for useKeyboardNavigation hook in src/visualization/hooks/__tests__/useKeyboardNavigation.spec.ts (test arrow key handlers, filter respect)
-- [ ] T033 [P] [US2] Component test for PlaybackControls step buttons in src/visualization/timeline/__tests__/PlaybackControls.spec.ts (test step forward/back buttons)
-- [ ] T034 [P] [US2] Integration test for animation interruption in src/visualization/__tests__/animationInterruption.spec.ts (test rapid stepping cancels animations)
-- [ ] T035 [US2] **Commit User Story 2 tests** (Constitution Principle XXII - REQUIRED)
+- [X] T032 [P] [US2] Unit test for useKeyboardNavigation hook in src/visualization/hooks/__tests__/useKeyboardNavigation.spec.ts (test arrow key handlers, filter respect)
+- [X] T033 [P] [US2] Component test for PlaybackControls step buttons in src/visualization/timeline/__tests__/PlaybackControls.spec.ts (test step forward/back buttons)
+- [X] T034 [P] [US2] Integration test for animation interruption in src/visualization/__tests__/animationInterruption.spec.ts (test rapid stepping cancels animations)
+- [X] T035 [US2] **Commit User Story 2 tests** (Constitution Principle XXII - REQUIRED)
 
 ### Implementation for User Story 2
 
-- [ ] T036 [P] [US2] Implement ReplayStore.stepForward() in src/stores/replayStore.ts (find next event after cursor, respect filters, return new timestamp or null)
-- [ ] T037 [P] [US2] Implement ReplayStore.stepBackward() in src/stores/replayStore.ts (find previous event before cursor, respect filters, return new timestamp or null)
-- [ ] T038 [P] [US2] Implement ReplayStore.jumpToStart() in src/stores/replayStore.ts (set cursor to first event timestamp)
-- [ ] T039 [P] [US2] Implement ReplayStore.jumpToEnd() in src/stores/replayStore.ts (set cursor to last event timestamp)
-- [ ] T040 [US2] Create useKeyboardNavigation hook in src/visualization/hooks/useKeyboardNavigation.ts (add keydown listener, call replayStore step methods on arrow keys)
-- [ ] T041 [US2] Modify PlaybackControls.tsx: Add step forward/backward buttons, wire to replayStore.stepForward/stepBackward
-- [ ] T042 [US2] Modify PlaybackControls.tsx: Add jump to start/end buttons, wire to replayStore.jumpToStart/jumpToEnd
-- [ ] T043 [US2] Integrate useKeyboardNavigation in TimelineView.tsx (call hook with replayStore and events)
-- [ ] T044 [US2] Run `npx vitest run --no-watch` - Verify User Story 2 tests pass
-- [ ] T045 [US2] Run `npm run check && npm run typecheck` - Fix any errors
-- [ ] T046 [US2] **Commit completed User Story 2 implementation** (Constitution Principle XXII - REQUIRED)
+- [X] T036 [P] [US2] Implement ReplayStore.stepForward() in src/stores/replayStore.ts (find next event after cursor, respect filters, return new timestamp or null)
+- [X] T037 [P] [US2] Implement ReplayStore.stepBackward() in src/stores/replayStore.ts (find previous event before cursor, respect filters, return new timestamp or null)
+- [X] T038 [P] [US2] Implement ReplayStore.jumpToStart() in src/stores/replayStore.ts (set cursor to first event timestamp)
+- [X] T039 [P] [US2] Implement ReplayStore.jumpToEnd() in src/stores/replayStore.ts (set cursor to last event timestamp)
+- [X] T040 [US2] Create useKeyboardNavigation hook in src/visualization/hooks/useKeyboardNavigation.ts (add keydown listener, call replayStore step methods on arrow keys)
+- [X] T041 [US2] Modify PlaybackControls.tsx: Add step forward/backward buttons, wire to replayStore.stepForward/stepBackward
+- [X] T042 [US2] Modify PlaybackControls.tsx: Add jump to start/end buttons, wire to replayStore.jumpToStart/jumpToEnd
+- [X] T043 [US2] Integrate useKeyboardNavigation in TimelineView.tsx (call hook with replayStore and events)
+- [X] T044 [US2] Run `npx vitest run --no-watch` - Verify User Story 2 tests pass
+- [X] T045 [US2] Run `npm run check && npm run typecheck` - Fix any errors
+- [X] T046 [US2] **Commit completed User Story 2 implementation** (Constitution Principle XXII - REQUIRED)
 
 **Checkpoint**: At this point, users can step through events one at a time via keyboard or UI controls
 

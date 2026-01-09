@@ -432,6 +432,12 @@ export interface TimelineViewProps {
 
 	/** Selection store for cross-view synchronization */
 	selection?: import("./selection").SelectionStore;
+
+	/** Replay store for event replay functionality */
+	replayStore?: import("../stores/replayStore").ReplayStore;
+
+	/** Recording store for save/load functionality */
+	recordingStore?: import("../stores/recordingStore").RecordingStore;
 }
 
 /**
@@ -518,6 +524,18 @@ export interface PlaybackControlsProps {
 
 	/** Callback when speed changed */
 	onSpeedChange?: (speed: number) => void;
+
+	/** Callback for step forward */
+	onStepForward?: () => void;
+
+	/** Callback for step backward */
+	onStepBackward?: () => void;
+
+	/** Callback for jump to start */
+	onJumpToStart?: () => void;
+
+	/** Callback for jump to end */
+	onJumpToEnd?: () => void;
 }
 
 /**

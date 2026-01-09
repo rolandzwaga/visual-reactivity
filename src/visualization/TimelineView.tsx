@@ -15,6 +15,7 @@ import type {
 	TimelineFilter,
 	TimelineViewProps,
 } from "../types/timeline";
+import { useKeyboardNavigation } from "./hooks/useKeyboardNavigation";
 import { useSelectionSync } from "./hooks/useSelectionSync";
 import { useTimelineLayout } from "./hooks/useTimelineLayout";
 import styles from "./TimelineView.module.css";
@@ -187,6 +188,34 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 		setPlayback({ ...playback(), speed });
 	};
 
+	const handleStepForward = () => {
+		if (props.replayStore) {
+			props.replayStore.stepForward(events());
+		}
+	};
+
+	const handleStepBackward = () => {
+		if (props.replayStore) {
+			props.replayStore.stepBackward(events());
+		}
+	};
+
+	const handleJumpToStart = () => {
+		if (props.replayStore) {
+			props.replayStore.jumpToStart(events());
+		}
+	};
+
+	const handleJumpToEnd = () => {
+		if (props.replayStore) {
+			props.replayStore.jumpToEnd(events());
+		}
+	};
+
+	if (props.replayStore) {
+		useKeyboardNavigation(props.replayStore, events);
+	}
+
 	onCleanup(() => {
 		if (playback().rafId !== null) {
 			cancelAnimationFrame(playback().rafId!);
@@ -212,6 +241,10 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 					onPlay={handlePlay}
 					onPause={handlePause}
 					onSpeedChange={handleSpeedChange}
+					onStepForward={handleStepForward}
+					onStepBackward={handleStepBackward}
+					onJumpToStart={handleJumpToStart}
+					onJumpToEnd={handleJumpToEnd}
 				/>
 			</div>
 
