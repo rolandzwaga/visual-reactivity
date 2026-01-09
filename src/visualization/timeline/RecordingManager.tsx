@@ -6,7 +6,7 @@ import styles from "./RecordingManager.module.css";
 export interface RecordingManagerProps {
 	recordingStore: RecordingStore;
 	onLoad: (id: number) => void;
-	onSave: () => void;
+	onSave: (name: string) => void | Promise<void>;
 }
 
 export const RecordingManager: Component<RecordingManagerProps> = (props) => {
@@ -42,7 +42,7 @@ export const RecordingManager: Component<RecordingManagerProps> = (props) => {
 		}
 
 		try {
-			props.onSave();
+			await props.onSave(name);
 			setSaveName("");
 			setError(null);
 			await loadRecordings();

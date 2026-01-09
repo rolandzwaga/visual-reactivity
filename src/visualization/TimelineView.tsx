@@ -31,6 +31,9 @@ import { TimelineFilters } from "./timeline/TimelineFilters";
 
 export const TimelineView: Component<TimelineViewProps> = (props) => {
 	const [events, setEvents] = createSignal<ReactivityEvent[]>([]);
+	const [currentRecording, setCurrentRecording] = createSignal<
+		import("../types/replay").Recording | null
+	>(null);
 	const [hoveredEvent, setHoveredEvent] = createSignal<TimelineEvent | null>(
 		null,
 	);
@@ -248,6 +251,26 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 					onJumpToStart={handleJumpToStart}
 					onJumpToEnd={handleJumpToEnd}
 				/>
+				<Show when={props.recordingStore && props.replayStore}>
+					<RecordingManager
+						recordingStore={props.recordingStore!}
+						onLoad={async (id) => {
+							const recording = await props.recordingStore!.load(id);
+							if (recording) {
+								setEvents(recording.events);
+								setCurrentRecording(recording);
+								props.replayStore!.loadRecording(recording);
+							}
+						}}
+						onSave={async (name) => {
+							await props.recordingStore!.save(name, events());
+						}}
+					/>
+					<ExportImportControls
+						recordingStore={props.recordingStore!}
+						currentRecording={currentRecording()}
+					/>
+				</Show>
 			</div>
 
 			<svg
