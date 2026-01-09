@@ -47,13 +47,13 @@ Single project structure (from plan.md):
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T005 **Read `specs/TESTING-GUIDE.md`** - Understand testing patterns and helpers (REQUIRED before any test code)
-- [ ] T006 [P] Unit test for ReplayStore in src/stores/__tests__/replayStore.spec.ts (test state transitions, cursor navigation)
-- [ ] T007 [P] Unit test for RecordingStore in src/stores/__tests__/recordingStore.spec.ts (test save/load/delete/validation)
-- [ ] T008 [P] Unit test for IndexedDB utilities in src/lib/__tests__/indexedDB.spec.ts (test open/read/write/delete)
-- [ ] T009 [P] Unit test for historicalState in src/lib/__tests__/historicalState.spec.ts (test reconstruction algorithm, snapshot caching)
-- [ ] T010 [P] Unit test for validation in src/lib/__tests__/validation.spec.ts (test name validation rules)
-- [ ] T011 **Commit foundational tests** (Constitution Principle XXII - REQUIRED)
+- [X] T005 **Read `specs/TESTING-GUIDE.md`** - Understand testing patterns and helpers (REQUIRED before any test code)
+- [X] T006 [P] Unit test for ReplayStore in src/stores/__tests__/replayStore.spec.ts (test state transitions, cursor navigation)
+- [X] T007 [P] Unit test for RecordingStore in src/stores/__tests__/recordingStore.spec.ts (test save/load/delete/validation)
+- [X] T008 [P] Unit test for IndexedDB utilities in src/lib/__tests__/indexedDB.spec.ts (test open/read/write/delete)
+- [X] T009 [P] Unit test for historicalState in src/lib/__tests__/historicalState.spec.ts (test reconstruction algorithm, snapshot caching)
+- [X] T010 [P] Unit test for validation in src/lib/__tests__/validation.spec.ts (test name validation rules)
+- [X] T011 **Commit foundational tests** (Constitution Principle XXII - REQUIRED)
 
 ### Implementation for Foundational Infrastructure
 
