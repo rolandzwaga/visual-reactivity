@@ -17,6 +17,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-08
 - In-memory selection state via SolidJS store, no persistence required (007-view-sync)
 - TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-selection, d3-zoom), existing ReactivityTracker (008-pattern-detection-analysis)
 - Browser localStorage for pattern detection settings and exceptions (008-pattern-detection-analysis)
+- TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-scale, d3-axis, d3-brush, d3-selection, d3-zoom - all already installed from Feature 006) (009-timeline-playback)
+- IndexedDB for persistent recording storage (clarified via Q1: preferred over localStorage for capacity) (009-timeline-playback)
 
 - TypeScript 5.9.3 with strict mode + SolidJS 1.9.10 (wrapping its primitives) (001-core-instrumentation)
 
@@ -48,9 +50,9 @@ tests/
 TypeScript 5.9.3 with strict mode: Follow standard conventions
 
 ## Recent Changes
+- 009-timeline-playback: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-scale, d3-axis, d3-brush, d3-selection, d3-zoom - all already installed from Feature 006)
 - 008-pattern-detection-analysis: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-selection, d3-zoom), existing ReactivityTracker
 - 007-view-sync: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10 (createStore, createEffect, createMemo), D3.js (existing - for graph/tree manipulation)
-- 006-timeline-view-horizontal: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-scale for time scales, d3-axis for axis rendering, d3-brush for cursor, d3-selection for DOM, d3-zoom for navigation - **d3-axis and d3-brush need adding**)
 
 
 <!-- MANUAL ADDITIONS START -->

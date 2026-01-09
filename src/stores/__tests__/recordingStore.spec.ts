@@ -1,23 +1,23 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { createRecordingStore } from "../recordingStore";
+import { beforeEach, describe, expect, test } from "vitest";
+import "fake-indexeddb/auto";
 import type { ReactivityEvent } from "../../types/events";
+import { createRecordingStore } from "../recordingStore";
 
 describe("RecordingStore", () => {
-	let indexedDB: IDBFactory;
-
-	beforeEach(() => {
-		indexedDB = new IDBFactory();
-		vi.stubGlobal("indexedDB", indexedDB);
-	});
-
-	afterEach(() => {
-		vi.unstubAllGlobals();
+	beforeEach(async () => {
+		const databases = await indexedDB.databases();
+		for (const db of databases) {
+			if (db.name) {
+				indexedDB.deleteDatabase(db.name);
+			}
+		}
 	});
 
 	test("saves recording with valid name", async () => {
 		const store = createRecordingStore();
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-11",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 100,
@@ -69,6 +69,7 @@ describe("RecordingStore", () => {
 		const store = createRecordingStore();
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-12",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 100,
@@ -93,6 +94,7 @@ describe("RecordingStore", () => {
 		const store = createRecordingStore();
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-13",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 100,
@@ -112,6 +114,7 @@ describe("RecordingStore", () => {
 		const store = createRecordingStore();
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-14",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 100,
@@ -129,6 +132,7 @@ describe("RecordingStore", () => {
 		const store = createRecordingStore();
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-15",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 100,

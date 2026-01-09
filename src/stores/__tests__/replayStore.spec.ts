@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { testInRoot } from "../../__tests__/helpers";
-import { createReplayStore } from "../replayStore";
 import type { ReactivityEvent } from "../../types/events";
+import { createReplayStore } from "../replayStore";
 
 describe("ReplayStore", () => {
 	test("initializes with live mode inactive state", () => {
@@ -52,12 +52,14 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-1",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
 					data: { newValue: 1, previousValue: 0 },
 				},
 				{
+					id: "event-2",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 200,
@@ -78,6 +80,7 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-3",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -97,12 +100,14 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-4",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
 					data: { newValue: 1, previousValue: 0 },
 				},
 				{
+					id: "event-5",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 200,
@@ -123,6 +128,7 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-6",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -142,12 +148,14 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-7",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
 					data: { newValue: 1, previousValue: 0 },
 				},
 				{
+					id: "event-8",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 200,
@@ -167,12 +175,14 @@ describe("ReplayStore", () => {
 			const store = createReplayStore();
 			const events: ReactivityEvent[] = [
 				{
+					id: "event-9",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
 					data: { newValue: 1, previousValue: 0 },
 				},
 				{
+					id: "event-10",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 200,

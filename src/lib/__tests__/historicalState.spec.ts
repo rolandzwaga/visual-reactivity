@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { createStateReconstructor } from "../historicalState";
 import type { ReactivityEvent } from "../../types/events";
+import { createStateReconstructor } from "../historicalState";
 
 describe("historicalState", () => {
 	test("reconstructs empty state at timestamp 0", () => {
@@ -18,10 +18,11 @@ describe("historicalState", () => {
 	test("includes node created before timestamp", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-21",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
@@ -37,10 +38,11 @@ describe("historicalState", () => {
 	test("excludes node created after timestamp", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-22",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 200,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
@@ -53,12 +55,14 @@ describe("historicalState", () => {
 	test("updates node value from signal-write", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-23",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 			{
+				id: "event-24",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 150,
@@ -77,12 +81,14 @@ describe("historicalState", () => {
 	test("excludes disposed node", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-25",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 			{
+				id: "event-26",
 				type: "computation-dispose",
 				nodeId: "signal-1",
 				timestamp: 150,
@@ -100,12 +106,14 @@ describe("historicalState", () => {
 	test("includes node before disposal", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-27",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 			{
+				id: "event-28",
 				type: "computation-dispose",
 				nodeId: "signal-1",
 				timestamp: 200,
@@ -123,13 +131,13 @@ describe("historicalState", () => {
 	test("tracks edges from subscription-add", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-29",
 				type: "subscription-add",
 				nodeId: "memo-1",
 				timestamp: 100,
 				data: {
 					sourceId: "signal-1",
-					targetId: "memo-1",
-				},
+					},
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
@@ -144,10 +152,11 @@ describe("historicalState", () => {
 	test("caches snapshots for performance", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-30",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
@@ -164,10 +173,11 @@ describe("historicalState", () => {
 	test("clearCache removes cached snapshots", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-31",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 		];
 		const reconstructor = createStateReconstructor(events);
@@ -182,18 +192,21 @@ describe("historicalState", () => {
 	test("handles multiple signal writes", () => {
 		const events: ReactivityEvent[] = [
 			{
+				id: "event-32",
 				type: "signal-create",
 				nodeId: "signal-1",
 				timestamp: 100,
-				data: { name: "count", initialValue: 0 },
+				data: { value: 0 },
 			},
 			{
+				id: "event-33",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 150,
 				data: { newValue: 1, previousValue: 0 },
 			},
 			{
+				id: "event-34",
 				type: "signal-write",
 				nodeId: "signal-1",
 				timestamp: 200,

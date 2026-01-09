@@ -57,15 +57,15 @@ Single project structure (from plan.md):
 
 ### Implementation for Foundational Infrastructure
 
-- [ ] T012 [P] Implement IndexedDB utilities in src/lib/indexedDB.ts (openDB, saveRecording, loadRecording, deleteRecording, listRecordings)
-- [ ] T013 [P] Implement validation in src/lib/validation.ts (validateRecordingName, pattern: /^[a-zA-Z0-9 _-]{1,100}$/)
-- [ ] T014 Implement RecordingStore in src/stores/recordingStore.ts (uses IndexedDB utils, implements contracts/RecordingStore.ts API)
-- [ ] T015 Implement historicalState in src/lib/historicalState.ts (createStateReconstructor with LRU cache, implements contracts/HistoricalState.ts API)
-- [ ] T016 Implement ReplayStore in src/stores/replayStore.ts (state, setCursor, clearCursor, step methods, implements contracts/ReplayStore.ts API)
-- [ ] T017 Create useReplayState hook in src/visualization/hooks/useReplayState.ts (subscribes to ReplayStore)
-- [ ] T018 Run `npm run check && npm run typecheck` - Fix any errors
-- [ ] T019 Run `npx vitest run --no-watch` - Verify all foundational tests pass
-- [ ] T020 **Commit foundational infrastructure** (Constitution Principle XXII - REQUIRED)
+- [X] T012 [P] Implement IndexedDB utilities in src/lib/indexedDB.ts (openDB, saveRecording, loadRecording, deleteRecording, listRecordings)
+- [X] T013 [P] Implement validation in src/lib/validation.ts (validateRecordingName, pattern: /^[a-zA-Z0-9 _-]{1,100}$/)
+- [X] T014 Implement RecordingStore in src/stores/recordingStore.ts (uses IndexedDB utils, implements contracts/RecordingStore.ts API)
+- [X] T015 Implement historicalState in src/lib/historicalState.ts (createStateReconstructor with LRU cache, implements contracts/HistoricalState.ts API)
+- [X] T016 Implement ReplayStore in src/stores/replayStore.ts (state, setCursor, clearCursor, step methods, implements contracts/ReplayStore.ts API)
+- [X] T017 Create useReplayState hook in src/visualization/hooks/useReplayState.ts (subscribes to ReplayStore)
+- [X] T018 Run `npm run check && npm run typecheck` - Fix any errors
+- [X] T019 Run `npx vitest run --no-watch` - Verify all foundational tests pass
+- [X] T020 **Commit foundational infrastructure** (Constitution Principle XXII - REQUIRED)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

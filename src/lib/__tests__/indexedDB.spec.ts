@@ -1,4 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
+import "fake-indexeddb/auto";
+import type { Recording } from "../../types/replay";
 import {
 	deleteRecording,
 	listRecordings,
@@ -6,18 +8,15 @@ import {
 	openDB,
 	saveRecording,
 } from "../indexedDB";
-import type { Recording } from "../../types/replay";
 
 describe("IndexedDB utilities", () => {
-	let indexedDB: IDBFactory;
-
-	beforeEach(() => {
-		indexedDB = new IDBFactory();
-		vi.stubGlobal("indexedDB", indexedDB);
-	});
-
-	afterEach(() => {
-		vi.unstubAllGlobals();
+	beforeEach(async () => {
+		const databases = await indexedDB.databases();
+		for (const db of databases) {
+			if (db.name) {
+				indexedDB.deleteDatabase(db.name);
+			}
+		}
 	});
 
 	test("openDB creates database with schema", async () => {
@@ -38,6 +37,7 @@ describe("IndexedDB utilities", () => {
 			version: "1.0.0",
 			events: [
 				{
+					id: "event-16",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -61,6 +61,7 @@ describe("IndexedDB utilities", () => {
 			version: "1.0.0",
 			events: [
 				{
+					id: "event-17",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -86,6 +87,7 @@ describe("IndexedDB utilities", () => {
 			version: "1.0.0",
 			events: [
 				{
+					id: "event-18",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -110,6 +112,7 @@ describe("IndexedDB utilities", () => {
 			version: "1.0.0",
 			events: [
 				{
+					id: "event-19",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
@@ -141,6 +144,7 @@ describe("IndexedDB utilities", () => {
 			version: "1.0.0",
 			events: [
 				{
+					id: "event-20",
 					type: "signal-write",
 					nodeId: "signal-1",
 					timestamp: 100,
