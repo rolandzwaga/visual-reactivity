@@ -43,6 +43,15 @@
 
 **Enforcement**: Any plan involving tests MUST include explicit task to consult testing guide.
 
+### Atomic Task Commits Gate (Principle XXII)
+
+**Required for ALL features**:
+- [ ] EVERY task group MUST end with explicit "Commit [description]" task item
+- [ ] Plan todo lists with commit as final step for each logical unit of work
+- [ ] NO task is complete without committing the work
+
+**Enforcement**: Tasks without explicit commit items violate Constitution Principle XXII.
+
 ## Project Structure
 
 ### Documentation (this feature)

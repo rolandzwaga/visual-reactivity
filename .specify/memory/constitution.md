@@ -1,50 +1,51 @@
 <!--
 =============================================================================
-SYNC IMPACT REPORT - Constitution Update 1.1.0 → 1.1.1
+SYNC IMPACT REPORT - Constitution Update 1.1.1 → 1.2.0
 =============================================================================
 
-Version Change: 1.1.0 → 1.1.1 (PATCH - Clarification of existing principle)
+Version Change: 1.1.1 → 1.2.0 (MINOR - New principle added)
 Date: 2026-01-09
 
 Changes:
 --------
-- STRENGTHENED: Principle XV. Zero Failing Tests Policy (NON-NEGOTIABLE)
-  - Added explicit "BLOCKER" language for spec completion
-  - Clarified that failing tests prevent declaring specs "finished" or "complete"
-  - Enhanced enforcement section with completion gate requirements
-  - Made it unmistakably clear: no spec can be marked complete with failing tests
+- ADDED: Principle XXII. Atomic Task Commits (NON-NEGOTIABLE)
+  - Explicit requirement that EVERY task's last todo item MUST be to commit the work
+  - Ensures no work is left uncommitted after task completion
+  - Prevents forgetting to commit completed work
+  - Makes commit boundaries explicit and traceable
 - UPDATED: Development Workflow section
-  - Step 8 now explicitly states: "All Tests Passing (BLOCKER)"
-  - Step 9 now explicitly states: "Quality Gates (BLOCKER)"
-  - Both steps now clearly indicate failures BLOCK declaring spec finished
+  - Step 6 now explicitly references new Principle XXII
+  - Reinforced that commits happen after EACH task completion
 
 Modified Principles:
 --------------------
-- Principle XV: Enhanced with explicit blocker language and completion gate enforcement
-- Development Workflow: Added explicit blocker language to steps 8 and 9
+- NEW Principle XXII: Atomic Task Commits - ensures every task ends with a commit
+- Development Workflow (Step 6): Updated to reference Principle XXII
 
 Templates Requiring Updates:
 -----------------------------
-✅ spec-template.md - Already has testing requirements; language is clear
-✅ plan-template.md - Already has testing guide gate; no changes needed
-✅ tasks-template.md - Already has testing reminders; no changes needed
+✅ tasks-template.md - Added explicit commit requirement to task examples and notes
+✅ plan-template.md - Added constitution check reminder for commit discipline
+✅ spec-template.md - No changes needed (spec doesn't define task-level workflow)
 
 Follow-up TODOs:
 ----------------
 None
 
-Rationale for PATCH Version Bump:
+Rationale for MINOR Version Bump:
 ----------------------------------
-This is a clarification and strengthening of existing Principle XV guidance.
-No new principles added, no principles removed or redefined.
-Backward compatible - reinforces existing testing discipline without changing substance.
+This is a NEW principle being added to the constitution that establishes a mandatory
+workflow requirement not previously codified. While committing has always been part
+of the workflow (Principle V), explicitly requiring the last todo item to be a commit
+is new guidance that expands constitutional scope. This is a material addition that
+affects agent behavior and task execution patterns.
 
 =============================================================================
 -->
 
 # Visual-Reactivity Project Constitution
 
-**Version**: 1.1.1
+**Version**: 1.2.0
 **Purpose**: Define non-negotiable development principles, standards, and governance for the Visual-Reactivity project
 
 ---
@@ -162,7 +163,7 @@ All development MUST follow Test-First Development:
 3. **Refactor**: Improve code while keeping tests green
 4. **Quality Gate**: Run `npm run check` and `npm run typecheck`
 5. **Fix Issues**: Resolve any errors
-6. **Commit**: Commit tests and implementation together after all checks pass
+6. **Commit**: Commit tests and implementation together after all checks pass (see **Principle XXII**)
 7. **Review**: Ensure all tests pass before requesting code review
 
 ### VI. Performance & User Experience
@@ -424,6 +425,37 @@ vi.mock('./store', async () => {
 - Test code not following guide patterns will be rejected in code review
 - "I didn't know about the helper" is NOT acceptable
 
+### XXII. Atomic Task Commits (NON-NEGOTIABLE)
+
+**CRITICAL**: EVERY task MUST end with committing the completed work. The last todo item for EVERY task execution MUST explicitly state that the work will be committed.
+
+**Absolute Requirements**:
+- **EVERY task's final todo item** MUST be: "Commit the completed work" (or equivalent explicit commit statement)
+- **NO task is complete** until work is committed to version control
+- **NEVER skip** the commit step after completing a task
+- **ALWAYS make commits atomic** - one logical unit of work per commit
+
+**TodoWrite Tool Requirements**:
+- When creating todo lists for tasks, the LAST item MUST ALWAYS be about committing
+- Example final todo items:
+  - "Commit the implementation"
+  - "Commit test and implementation together"
+  - "Commit completed feature to version control"
+  - "Git commit with descriptive message"
+
+**Enforcement**:
+- Agent MUST include explicit commit todo item for EVERY task
+- Skipping commit step violates this principle
+- Work left uncommitted after task completion is INCOMPLETE work
+- Code review will verify commit discipline
+
+**Rationale**:
+- Prevents work from being lost or forgotten
+- Ensures clear audit trail of changes
+- Makes commit boundaries explicit and traceable
+- Supports atomic, reviewable units of work
+- Prevents accumulation of uncommitted changes
+
 ---
 
 ## Technology Stack Requirements
@@ -474,7 +506,7 @@ vi.mock('./store', async () => {
    - Refactor while keeping tests green
    - Run quality checks
    - Fix all issues
-   - Commit atomically
+   - Commit atomically (see **Principle XXII** - MUST be last todo item)
 7. **Coverage Verification**: Verify 80% threshold after spec completion
 8. **All Tests Passing (BLOCKER)**: Ensure ALL tests pass before completion - failing tests BLOCK declaring spec finished
 9. **Quality Gates (BLOCKER)**: Run ALL quality gate commands (lint:css, check, typecheck) - failures BLOCK completion
@@ -500,6 +532,7 @@ All code reviews MUST verify:
 - [ ] CLAUDE.md consulted and updated
 - [ ] No duplicate code
 - [ ] No unauthorized dependency changes
+- [ ] Every task ended with a commit (Principle XXII compliance)
 
 ---
 
@@ -533,10 +566,10 @@ Exceptions are **extremely rare** and require:
 4. Time-bound exception with remediation plan
 5. Documentation in exceptions log
 
-**Note**: Security/compliance principles, Zero Failing Tests Policy, and Quality Gates have **NO exceptions**.
+**Note**: Security/compliance principles, Zero Failing Tests Policy, Quality Gates, and Atomic Task Commits have **NO exceptions**.
 
 ---
 
-**Version**: 1.1.1
+**Version**: 1.2.0
 **Ratified**: 2026-01-08
 **Last Amended**: 2026-01-09
