@@ -1,23 +1,21 @@
-import { createRoot, type Owner } from "solid-js";
+import { createRoot } from "solid-js";
 import { tracker } from "../instrumentation";
 import type { DemoContext } from "./types";
 
-export function createDemoContext(
-	fn: (dispose: () => void) => void,
-): DemoContext {
-	let owner: Owner | null = null;
+export function createDemoContext(fn: () => void): DemoContext {
+	let dispose: (() => void) | null = null;
 
-	const dispose = () => {
-		if (owner) {
-			owner = null;
-		}
-		tracker.reset();
-	};
-
-	createRoot((disposeRoot) => {
-		owner = disposeRoot as unknown as Owner;
-		fn(dispose);
+	createRoot((d) => {
+		dispose = d;
+		fn();
 	});
 
-	return { dispose };
+	return {
+		dispose: () => {
+			if (dispose) {
+				dispose();
+			}
+			tracker.reset();
+		},
+	};
 }
