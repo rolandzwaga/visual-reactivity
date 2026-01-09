@@ -81,20 +81,20 @@ Single project structure (from plan.md):
 
 > **REMINDER**: Consult `specs/TESTING-GUIDE.md` (from T005) before writing tests
 
-- [ ] T021 [P] [US1] Component test for App.tsx timeline integration in src/__tests__/App.spec.tsx (test view mode switching, store creation)
-- [ ] T022 [P] [US1] Integration test for view state preservation in src/visualization/__tests__/viewPersistence.spec.ts (test scroll/cursor/filter preservation)
-- [ ] T023 [US1] **Commit User Story 1 tests** (Constitution Principle XXII - REQUIRED)
+- [X] T021 [P] [US1] Component test for App.tsx timeline integration in src/__tests__/App.spec.tsx (test view mode switching, store creation)
+- [~] T022 [P] [US1] Integration test for view state preservation in src/visualization/__tests__/viewPersistence.spec.ts (test scroll/cursor/filter preservation)
+- [X] T023 [US1] **Commit User Story 1 tests** (Constitution Principle XXII - REQUIRED)
 
 ### Implementation for User Story 1
 
-- [ ] T024 [US1] Modify App.tsx: Add "timeline" to ViewMode type, create replayStore and recordingStore instances
-- [ ] T025 [US1] Modify App.tsx: Add Timeline navigation button, conditionally render TimelineView when viewMode === "timeline"
-- [ ] T026 [US1] Modify App.tsx: Pass replayStore to DependencyGraph, OwnershipTree, and TimelineView props
-- [ ] T027 [US1] Modify App.tsx: Pass recordingStore to TimelineView props
-- [ ] T028 [US1] Update TimelineView.tsx: Accept replayStore and recordingStore props, integrate with existing playback functionality
-- [ ] T029 [US1] Run `npx vitest run --no-watch` - Verify User Story 1 tests pass
-- [ ] T030 [US1] Run `npm run check && npm run typecheck` - Fix any errors
-- [ ] T031 [US1] **Commit completed User Story 1 implementation** (Constitution Principle XXII - REQUIRED)
+- [X] T024 [US1] Modify App.tsx: Add "timeline" to ViewMode type, create replayStore and recordingStore instances
+- [X] T025 [US1] Modify App.tsx: Add Timeline navigation button, conditionally render TimelineView when viewMode === "timeline"
+- [X] T026 [US1] Modify App.tsx: Pass replayStore to DependencyGraph, OwnershipTree, and TimelineView props
+- [X] T027 [US1] Modify App.tsx: Pass recordingStore to TimelineView props
+- [~] T028 [US1] Update TimelineView.tsx: Accept replayStore and recordingStore props, integrate with existing playback functionality
+- [X] T029 [US1] Run `npx vitest run --no-watch` - Verify User Story 1 tests pass
+- [X] T030 [US1] Run `npm run check && npm run typecheck` - Fix any errors
+- [X] T031 [US1] **Commit completed User Story 1 implementation** (Constitution Principle XXII - REQUIRED)
 
 **Checkpoint**: At this point, Timeline is accessible via navigation and integrates with existing views
 
