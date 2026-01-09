@@ -1,5 +1,6 @@
 import { createDemoContext } from "./DemoContext";
 import { DerivedState } from "./DerivedState";
+import { DiamondPattern } from "./DiamondPattern";
 import { SimpleCounter } from "./SimpleCounter";
 import type { Demo, DemoRegistry } from "./types";
 
@@ -30,11 +31,25 @@ export const DEMO_REGISTRY: DemoRegistry = {
 		component: DerivedState,
 		setup: () => createDemoContext(() => {}),
 	},
+	"diamond-pattern": {
+		metadata: {
+			id: "diamond-pattern",
+			name: "Diamond Pattern",
+			concept: "Glitch-Free Execution",
+			description:
+				"Demonstrates glitch-free execution where one signal feeds two memos, which both feed one effect. The effect runs exactly once per signal update.",
+			instructions:
+				"Change the input value to update the signal. Watch how both memo branches update before the final effect runs, ensuring consistent state.",
+		},
+		component: DiamondPattern,
+		setup: () => createDemoContext(() => {}),
+	},
 };
 
 export const DEMO_LIST: Demo[] = [
 	DEMO_REGISTRY["simple-counter"],
 	DEMO_REGISTRY["derived-state"],
+	DEMO_REGISTRY["diamond-pattern"],
 ];
 
 export function getDemo(id: string): Demo | undefined {
