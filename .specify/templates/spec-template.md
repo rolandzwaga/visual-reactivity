@@ -100,6 +100,31 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+## Testing Requirements *(if tests needed)*
+
+<!--
+  ACTION REQUIRED: If this feature requires unit tests, you MUST:
+  1. Consult specs/TESTING-GUIDE.md BEFORE writing any test code
+  2. Use centralized test helpers (testInRoot, useMockDate, etc.)
+  3. Follow SolidJS-specific testing patterns (NOT React patterns)
+
+  This is enforced by Constitution Principle XXI.
+-->
+
+**Testing Guide Consultation**: [ ] Read `specs/TESTING-GUIDE.md` before implementing tests
+
+**Test Coverage Requirements**:
+- [ ] Unit tests for business logic (if applicable)
+- [ ] Component tests for UI interactions (if applicable)
+- [ ] Integration tests for workflows (if applicable)
+- [ ] Edge case and error path testing
+
+**Testing Patterns to Follow** (from TESTING-GUIDE.md):
+- Use `testInRoot()` for signal/store tests
+- Use `useMockDate()` for date mocking
+- Flush microtasks with `await Promise.resolve()` when using fake timers
+- Use `mouseDown` + `mouseUp` for selection events (not `click()`)
+
 ## Success Criteria *(mandatory)*
 
 <!--

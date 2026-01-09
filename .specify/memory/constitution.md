@@ -1,6 +1,44 @@
+<!--
+=============================================================================
+SYNC IMPACT REPORT - Constitution Update 1.0.0 → 1.1.0
+=============================================================================
+
+Version Change: 1.0.0 → 1.1.0 (MINOR - New principle added)
+Date: 2026-01-09
+
+Changes:
+--------
+- ADDED: Principle XXI. Testing Guide Reference (NON-NEGOTIABLE)
+  - Requires specs/TESTING-GUIDE.md in context before ANY test-related tasks
+  - Mandates use of centralized test helpers (testInRoot, useMockDate, etc.)
+  - Prevents test anti-patterns (manual createRoot, React patterns, etc.)
+  - Enforces explicit todo items in specs/plans/tasks when tests involved
+
+Modified Principles:
+--------------------
+None (this is a new addition)
+
+Templates Requiring Updates:
+-----------------------------
+✅ spec-template.md - Updated with testing guide consultation requirement
+✅ plan-template.md - Updated constitution check section with testing guide gate
+✅ tasks-template.md - Updated test task sections with testing guide consultation
+
+Follow-up TODOs:
+----------------
+None
+
+Rationale for MINOR Version Bump:
+----------------------------------
+New principle added without removing or redefining existing principles.
+Backward compatible - enhances testing discipline without invalidating prior work.
+
+=============================================================================
+-->
+
 # Visual-Reactivity Project Constitution
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Purpose**: Define non-negotiable development principles, standards, and governance for the Visual-Reactivity project
 
 ---
@@ -346,6 +384,28 @@ vi.mock('./store', async () => {
 - **Real-time Feedback**: Visual changes reflect immediately upon user interaction
 - **Data Integrity**: Editing operations never corrupt underlying data
 
+### XXI. Testing Guide Reference (NON-NEGOTIABLE)
+
+**CRITICAL**: Before ANY task involving unit tests, MUST ensure `specs/TESTING-GUIDE.md` is in context.
+
+**Mandatory Consultation**:
+- **BEFORE spec/plan/tasks with tests**: Read `specs/TESTING-GUIDE.md` to understand testing patterns
+- **BEFORE writing ANY test code**: Verify testing patterns and helpers from guide
+- **DURING test implementation**: Follow SolidJS-specific patterns from guide
+- **AFTER test creation**: Validate tests use centralized helpers (e.g., `testInRoot()`, `useMockDate()`)
+
+**Prevention of Test Anti-Patterns**:
+- Check for existing test helpers before creating new ones
+- Avoid manual `createRoot()` - use `testInRoot()` helper
+- Never use React testing patterns (`act()`, etc.) - use SolidJS patterns
+- Always flush microtasks with fake timers (`await Promise.resolve()`)
+- Follow mouse event selection pattern (`mouseDown` + `mouseUp`, not `click()`)
+
+**Enforcement**:
+- Specs/plans/tasks involving tests MUST include explicit todo item to consult testing guide
+- Test code not following guide patterns will be rejected in code review
+- "I didn't know about the helper" is NOT acceptable
+
 ---
 
 ## Technology Stack Requirements
@@ -459,5 +519,6 @@ Exceptions are **extremely rare** and require:
 
 ---
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Ratified**: 2026-01-08
+**Last Amended**: 2026-01-09

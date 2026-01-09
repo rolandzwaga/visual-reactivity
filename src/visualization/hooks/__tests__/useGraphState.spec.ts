@@ -1,5 +1,5 @@
-import { createRoot } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { testInRoot } from "../../../__tests__/helpers";
 import { tracker } from "../../../instrumentation";
 import { createReactiveNode } from "../../../types";
 import { useGraphState } from "../useGraphState";
@@ -14,7 +14,7 @@ describe("useGraphState", () => {
 	});
 
 	it("initializes with empty graph state", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 
 			expect(state.nodes()).toEqual([]);
@@ -22,12 +22,11 @@ describe("useGraphState", () => {
 			expect(state.selectedNodeId()).toBeNull();
 			expect(state.hoveredNodeId()).toBeNull();
 
-			dispose();
 		});
 	});
 
 	it("provides addNode method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const node = createReactiveNode("test-1", "signal", "testSignal", 42);
 
@@ -37,12 +36,11 @@ describe("useGraphState", () => {
 			expect(state.nodes()[0].id).toBe("test-1");
 			expect(state.nodes()[0].data).toBe(node);
 
-			dispose();
 		});
 	});
 
 	it("provides removeNode method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const node = createReactiveNode("test-1", "signal", "testSignal", 42);
 
@@ -52,12 +50,11 @@ describe("useGraphState", () => {
 			state.removeNode("test-1");
 			expect(state.nodes()).toHaveLength(0);
 
-			dispose();
 		});
 	});
 
 	it("provides addEdge method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const nodeA = createReactiveNode("a", "signal", "signalA", 1);
 			const nodeB = createReactiveNode("b", "memo", "memoB", 2);
@@ -70,12 +67,11 @@ describe("useGraphState", () => {
 			expect(state.edges()[0].source).toBe("a");
 			expect(state.edges()[0].target).toBe("b");
 
-			dispose();
 		});
 	});
 
 	it("provides removeEdge method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const nodeA = createReactiveNode("a", "signal", "signalA", 1);
 			const nodeB = createReactiveNode("b", "memo", "memoB", 2);
@@ -88,12 +84,11 @@ describe("useGraphState", () => {
 			state.removeEdge("a", "b");
 			expect(state.edges()).toHaveLength(0);
 
-			dispose();
 		});
 	});
 
 	it("provides setSelectedNode method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 
 			state.setSelectedNode("node-1");
@@ -102,12 +97,11 @@ describe("useGraphState", () => {
 			state.setSelectedNode(null);
 			expect(state.selectedNodeId()).toBeNull();
 
-			dispose();
 		});
 	});
 
 	it("provides setHoveredNode method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 
 			state.setHoveredNode("node-1");
@@ -116,12 +110,11 @@ describe("useGraphState", () => {
 			state.setHoveredNode(null);
 			expect(state.hoveredNodeId()).toBeNull();
 
-			dispose();
 		});
 	});
 
 	it("removes edges when node is removed", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const nodeA = createReactiveNode("a", "signal", "signalA", 1);
 			const nodeB = createReactiveNode("b", "memo", "memoB", 2);
@@ -139,12 +132,11 @@ describe("useGraphState", () => {
 
 			expect(state.edges()).toHaveLength(0);
 
-			dispose();
 		});
 	});
 
 	it("provides getNodeById method", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useGraphState();
 			const node = createReactiveNode("test-1", "signal", "testSignal", 42);
 
@@ -157,7 +149,6 @@ describe("useGraphState", () => {
 			const notFound = state.getNodeById("nonexistent");
 			expect(notFound).toBeUndefined();
 
-			dispose();
 		});
 	});
 });

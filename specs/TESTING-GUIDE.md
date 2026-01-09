@@ -12,43 +12,103 @@
 
 ## Test Helpers
 
+**CRITICAL**: All test helpers are centralized in `src/__tests__/helpers/`. Always import from this location - DO NOT recreate these helpers in individual test files.
+
 ```typescript
+// Import from centralized helpers (REQUIRED)
 import { testInRoot, useMockDate, flushMicrotasks } from '../helpers';
 ```
 
-**Import Note:** If your helpers use `@solidjs/router` (which has `.jsx` files), import directly to avoid load errors when Router isn't needed:
+**Available Helpers**:
+- `testInRoot()` - Wraps signals/stores in reactive root ([src/__tests__/helpers/solidjs.ts](../src/__tests__/helpers/solidjs.ts))
+- `useMockDate()` - Sets up fake timers with date ([src/__tests__/helpers/time.ts](../src/__tests__/helpers/time.ts))
+- `flushMicrotasks()` - Flushes microtasks for SolidJS effects ([src/__tests__/helpers/time.ts](../src/__tests__/helpers/time.ts))
 
-```typescript
-import { testInRoot } from '../helpers/solidjs';
-import { useMockDate, flushMicrotasks } from '../helpers/time';
-```
+**Why Centralized Helpers?**
+- Consistent behavior across all tests
+- Single source of truth for testing patterns
+- Easier to maintain and update
+- Prevents duplicated helper code
+- Enforced by Constitution Principle XXI
 
 ### `testInRoot(testFn)`
 
+**Location**: [src/__tests__/helpers/solidjs.ts](../src/__tests__/helpers/solidjs.ts)
+
 Wraps signal/store tests in `createRoot()` with auto-disposal. Required because SolidJS reactivity needs a reactive root.
 
+**Key Features**:
+- Automatically creates and disposes reactive root
+- Supports both synchronous and asynchronous test functions
+- Handles errors properly (disposes before re-throwing)
+- For async tests, disposal happens after Promise resolves
+
 ```typescript
-// BAD: manual createRoot
+// BAD: manual createRoot (DON'T DO THIS)
 createRoot(dispose => { /* test */ dispose(); });
 
-// GOOD: use helper (supports sync and async)
-testInRoot(() => {
-  const [count, setCount] = createSignal(0);
-  setCount(1);
-  expect(count()).toBe(1);
+// GOOD: use centralized helper (supports sync and async)
+import { testInRoot } from '../helpers';
+
+test('updates signal', () => {
+  testInRoot(() => {
+    const [count, setCount] = createSignal(0);
+    setCount(1);
+    expect(count()).toBe(1);
+  });
+});
+
+// Async example
+test('async effect', async () => {
+  await testInRoot(async () => {
+    const [data, setData] = createSignal(null);
+    // ... async operations
+    await waitFor(() => expect(data()).not.toBeNull());
+  });
 });
 ```
+
+**When to Use**:
+- ANY test that creates signals (`createSignal`)
+- ANY test that creates stores (`createStore`)
+- ANY test that creates effects (`createEffect`)
+- ANY test that uses SolidJS reactive primitives
 
 ### `useMockDate(dateString)`
 
-Sets up fake timers with date, auto-cleans in afterEach.
+**Location**: [src/__tests__/helpers/time.ts](../src/__tests__/helpers/time.ts)
+
+Sets up Vitest fake timers with a specific date. Automatically sets up in `beforeEach` and cleans up in `afterEach`.
+
+**Key Features**:
+- Configures fake timers to NOT fake `queueMicrotask` (preserves SolidJS reactivity)
+- Only fakes: `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `Date`
+- Automatic cleanup - no manual `vi.useRealTimers()` needed
+- Must be called at describe block level (not inside individual tests)
 
 ```typescript
-describe('Date tests', () => {
+import { useMockDate } from '../helpers';
+
+describe('Date calculations', () => {
   useMockDate('2025-01-15T12:00:00Z');
-  test('uses mocked date', () => { /* ... */ });
+
+  test('calculates days until due', () => {
+    const dueDate = new Date('2025-01-18T12:00:00Z');
+    expect(daysUntil(dueDate)).toBe(3);
+  });
+
+  test('works across multiple tests', () => {
+    expect(new Date().toISOString()).toBe('2025-01-15T12:00:00.000Z');
+  });
 });
 ```
+
+**When to Use**:
+- Tests that depend on current date/time
+- Tests that use timers (`setTimeout`, `setInterval`)
+- Tests that need consistent date across multiple test cases
+
+**Important**: This helper is specifically configured for SolidJS - it does NOT fake `queueMicrotask` because SolidJS uses it for effects.
 
 ## SolidJS Patterns
 
@@ -141,11 +201,50 @@ vi.mock('@solidjs/router', async () => ({
 beforeEach(() => mockNavigate.mockClear());
 ```
 
-## Fake Timers & Microtasks
+### `flushMicrotasks()`
 
-**Critical:** SolidJS uses `queueMicrotask` for effects. Fake timers only control macrotasks (setTimeout). Must flush microtasks explicitly.
+**Location**: [src/__tests__/helpers/time.ts](../src/__tests__/helpers/time.ts)
+
+Flushes the microtask queue. Essential when using fake timers with SolidJS because effects run via `queueMicrotask`.
+
+**Key Features**:
+- Simple async helper: `await Promise.resolve()`
+- Must be called before AND after advancing timers
+- Required for SolidJS effects to run when using fake timers
 
 ```typescript
+import { flushMicrotasks } from '../helpers';
+
+test('debounced input', async () => {
+  vi.useFakeTimers();
+
+  // Your test setup...
+  await user.type(input, 'test');
+
+  // Flush BEFORE advancing timers
+  await flushMicrotasks();
+  await vi.advanceTimersByTimeAsync(300);
+  // Flush AFTER advancing timers
+  await flushMicrotasks();
+
+  expect(onChange).toHaveBeenCalled();
+
+  vi.useRealTimers();
+});
+```
+
+**When to Use**:
+- ANY test using fake timers with SolidJS effects
+- Before and after `vi.advanceTimersByTimeAsync()`
+- When effects don't seem to run during timer tests
+
+## Fake Timers & Microtasks
+
+**Critical:** SolidJS uses `queueMicrotask` for effects. Fake timers only control macrotasks (setTimeout). Must flush microtasks explicitly using the `flushMicrotasks()` helper.
+
+```typescript
+import { flushMicrotasks } from '../helpers';
+
 describe('Debounced input', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => { vi.useRealTimers(); cleanup(); }); // Order matters!
@@ -157,9 +256,9 @@ describe('Debounced input', () => {
 
     await user.type(screen.getByRole('textbox'), 'test');
 
-    await Promise.resolve();              // Flush microtasks BEFORE
+    await flushMicrotasks();              // Flush microtasks BEFORE
     await vi.advanceTimersByTimeAsync(300);
-    await Promise.resolve();              // Flush microtasks AFTER
+    await flushMicrotasks();              // Flush microtasks AFTER
 
     expect(onChange).toHaveBeenCalled();
   });
@@ -196,68 +295,86 @@ fireEvent.mouseUp(document);
 
 ## Anti-Patterns
 
-| Bad | Good |
-|-----|------|
-| Manual `createRoot(dispose => ...)` | `testInRoot(() => ...)` |
-| `vi.advanceTimersByTimeAsync()` alone | Wrap with `await Promise.resolve()` before/after |
-| `vi.useRealTimers()` per-test | `useMockDate()` or centralize in `afterEach` |
-| `afterEach { cleanup(); useRealTimers(); }` | `afterEach { useRealTimers(); cleanup(); }` |
-| `vi.advanceTimersByTime()` with async | `vi.advanceTimersByTimeAsync()` |
-| Testing implementation details | Test user-visible behavior |
+| Bad | Good | Why |
+|-----|------|-----|
+| Manual `createRoot(dispose => ...)` | `testInRoot(() => ...)` from helpers | Centralized, handles errors, supports async |
+| `await Promise.resolve()` directly | `await flushMicrotasks()` from helpers | Explicit intent, centralized |
+| `vi.advanceTimersByTimeAsync()` alone | Wrap with `flushMicrotasks()` before/after | SolidJS effects use microtasks |
+| `vi.useRealTimers()` per-test | `useMockDate()` helper at describe level | Auto-cleanup, SolidJS-safe config |
+| `afterEach { cleanup(); useRealTimers(); }` | `afterEach { useRealTimers(); cleanup(); }` | Order matters for cleanup |
+| `vi.advanceTimersByTime()` with async | `vi.advanceTimersByTimeAsync()` | Async version required for async code |
+| Testing implementation details | Test user-visible behavior | Tests should be implementation-agnostic |
+| Creating helper in test file | Import from `src/__tests__/helpers` | Single source of truth |
 
 ## Quick Reference
 
-| Task | Solution |
-|------|----------|
-| Render component | `render(() => <Component />)` |
-| Test signals/stores | `testInRoot(() => { ... })` |
-| Mock dates | `useMockDate('2025-01-15T12:00:00Z')` |
-| Test effects | `testEffect(done => { createEffect(...); done(); })` |
-| Test directives | `renderDirective(directive, { initialValue, targetElement })` |
-| Mock useNavigate | Module-level `vi.mock('@solidjs/router', ...)` |
-| Flush microtasks | `await Promise.resolve()` |
-| Form input (SolidJS) | `fireEvent.input()` + `fireEvent.change()` |
-| Selection events | `fireEvent.mouseDown()` + `fireEvent.mouseUp()` |
+| Task | Solution | Import From |
+|------|----------|-------------|
+| Render component | `render(() => <Component />)` | `@solidjs/testing-library` |
+| Test signals/stores | `testInRoot(() => { ... })` | `../helpers` ✅ |
+| Mock dates | `useMockDate('2025-01-15T12:00:00Z')` | `../helpers` ✅ |
+| Flush microtasks | `await flushMicrotasks()` | `../helpers` ✅ |
+| Test effects | `testEffect(done => { createEffect(...); done(); })` | `@solidjs/testing-library` |
+| Test directives | `renderDirective(directive, { initialValue, targetElement })` | `@solidjs/testing-library` |
+| Mock useNavigate | Module-level `vi.mock('@solidjs/router', ...)` | `vitest` |
+| Form input (SolidJS) | `fireEvent.input()` + `fireEvent.change()` | `@solidjs/testing-library` |
+| Selection events | `fireEvent.mouseDown()` + `fireEvent.mouseUp()` | `@solidjs/testing-library` |
 
-## Test Helper Implementation Examples
+✅ = Use centralized helper from `src/__tests__/helpers` (REQUIRED)
 
-Create these helpers in `src/__tests__/helpers/` as needed:
+## Centralized Test Helpers (ALREADY IMPLEMENTED)
 
-### `helpers/solidjs.ts`
+**Location**: [src/__tests__/helpers/](../src/__tests__/helpers/)
+
+All test helpers are already implemented and ready to use. **DO NOT recreate these helpers** in individual test files.
+
+### Available Files
+
+1. **[solidjs.ts](../src/__tests__/helpers/solidjs.ts)** - SolidJS reactive primitives testing
+   - `testInRoot()` - Wraps tests in reactive root with auto-disposal
+
+2. **[time.ts](../src/__tests__/helpers/time.ts)** - Time and date mocking
+   - `useMockDate()` - Sets up fake timers with specific date
+   - `flushMicrotasks()` - Flushes microtask queue for SolidJS effects
+
+3. **[index.ts](../src/__tests__/helpers/index.ts)** - Barrel export for all helpers
+   - Re-exports all helpers for convenient importing
+
+### Usage
 
 ```typescript
-import { createRoot } from 'solid-js';
+// Import from centralized location (REQUIRED)
+import { testInRoot, useMockDate, flushMicrotasks } from '../helpers';
 
-export function testInRoot<T>(fn: () => T): T {
-  let result: T;
-  createRoot(dispose => {
-    result = fn();
-    dispose();
+// Now use in your tests
+describe('My Feature', () => {
+  useMockDate('2025-01-15T12:00:00Z');
+
+  test('signal updates', () => {
+    testInRoot(() => {
+      const [count, setCount] = createSignal(0);
+      setCount(1);
+      expect(count()).toBe(1);
+    });
   });
-  return result!;
-}
-```
 
-### `helpers/time.ts`
-
-```typescript
-import { afterEach, beforeEach, vi } from 'vitest';
-
-export function useMockDate(dateString: string) {
-  beforeEach(() => {
+  test('debounced effect', async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date(dateString));
-  });
 
-  afterEach(() => {
+    // ... test setup
+
+    await flushMicrotasks();
+    await vi.advanceTimersByTimeAsync(300);
+    await flushMicrotasks();
+
+    // ... assertions
+
     vi.useRealTimers();
   });
-}
-
-export async function flushMicrotasks() {
-  await Promise.resolve();
-}
+});
 ```
+
+**Constitution Enforcement**: Using these centralized helpers is required by Principle XXI. Test code NOT using these helpers will be rejected in code review.
 
 ## References
 

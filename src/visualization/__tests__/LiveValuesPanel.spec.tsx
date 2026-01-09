@@ -1,10 +1,12 @@
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { flushMicrotasks } from "../../__tests__/helpers";
 import { createTrackedSignal } from "../../instrumentation/primitives";
 import { tracker } from "../../instrumentation/tracker";
 import { LiveValuesPanel } from "../LiveValuesPanel";
 
 afterEach(() => {
+	vi.useRealTimers();
 	cleanup();
 	tracker.reset();
 });
@@ -86,7 +88,7 @@ describe("LiveValuesPanel", () => {
 
 	it("should display signals created with tracker", async () => {
 		vi.useFakeTimers();
-		const { getByText } = render(() => (
+		const { container, getByText } = render(() => (
 			<LiveValuesPanel
 				isVisible={true}
 				width={350}
@@ -97,12 +99,15 @@ describe("LiveValuesPanel", () => {
 
 		createTrackedSignal(42, { name: "count" });
 
-		// Advance timers to allow reactivity to process
+		// Flush microtasks before advancing timers (SolidJS effects use queueMicrotask)
+		await flushMicrotasks();
 		await vi.runAllTimersAsync();
+		await flushMicrotasks();
 
+		// Verify signal name is displayed
 		expect(getByText(/count/)).toBeTruthy();
-		expect(getByText(/42/)).toBeTruthy();
-		vi.useRealTimers();
+		// Verify value is displayed (use container.textContent to avoid multiple element errors)
+		expect(container.textContent).toContain("42");
 	});
 
 	it("should update display when signal values change", () => {

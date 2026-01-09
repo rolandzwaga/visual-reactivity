@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
 	createHierarchyLayout,
 	type HierarchyLayoutOptions,
-} from "./hierarchyLayout";
+} from "../hierarchyLayout";
 
 describe("hierarchyLayout", () => {
 	describe("createHierarchyLayout", () => {

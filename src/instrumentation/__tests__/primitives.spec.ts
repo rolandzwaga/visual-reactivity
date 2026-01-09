@@ -1,5 +1,5 @@
-import { createRoot } from "solid-js";
 import { beforeEach, describe, expect, it } from "vitest";
+import { testInRoot } from "../../__tests__/helpers";
 import type { ReactivityEvent } from "../../types";
 import {
 	createTrackedEffect,
@@ -14,7 +14,7 @@ describe("createTrackedSignal", () => {
 	});
 
 	it("should register a signal node on creation", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			createTrackedSignal(42, { name: "count" });
 
 			const nodes = tracker.getNodes();
@@ -26,12 +26,11 @@ describe("createTrackedSignal", () => {
 			expect(node?.name).toBe("count");
 			expect(node?.value).toBe(42);
 
-			dispose();
 		});
 	});
 
 	it("should emit signal-create event on creation", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const events: ReactivityEvent[] = [];
 			tracker.subscribe((e) => events.push(e));
 
@@ -41,12 +40,11 @@ describe("createTrackedSignal", () => {
 			expect(events[0].type).toBe("signal-create");
 			expect(events[0].data).toEqual({ value: 10 });
 
-			dispose();
 		});
 	});
 
 	it("should emit signal-read event when getter is called", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count] = createTrackedSignal(5, { name: "count" });
 
 			const events: ReactivityEvent[] = [];
@@ -59,12 +57,11 @@ describe("createTrackedSignal", () => {
 			expect(events[0].type).toBe("signal-read");
 			expect(events[0].data).toEqual({ value: 5 });
 
-			dispose();
 		});
 	});
 
 	it("should emit signal-write event when setter is called", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count, setCount] = createTrackedSignal(0, { name: "count" });
 
 			const events: ReactivityEvent[] = [];
@@ -79,12 +76,11 @@ describe("createTrackedSignal", () => {
 			expect(writeEvent).toBeDefined();
 			expect(writeEvent?.data).toEqual({ previousValue: 0, newValue: 10 });
 
-			dispose();
 		});
 	});
 
 	it("should work without a custom name", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			createTrackedSignal(1);
 
 			const nodes = tracker.getNodes();
@@ -94,7 +90,6 @@ describe("createTrackedSignal", () => {
 			expect(node?.name).toBeNull();
 			expect(node?.value).toBe(1);
 
-			dispose();
 		});
 	});
 });
@@ -105,7 +100,7 @@ describe("createTrackedMemo", () => {
 	});
 
 	it("should register a memo node on creation", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count] = createTrackedSignal(5, { name: "count" });
 			createTrackedMemo(() => count() * 2, { name: "doubled" });
 
@@ -115,12 +110,11 @@ describe("createTrackedMemo", () => {
 			expect(memoNode).toBeDefined();
 			expect(memoNode?.name).toBe("doubled");
 
-			dispose();
 		});
 	});
 
 	it("should emit computation-execute-start and computation-execute-end events", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const events: ReactivityEvent[] = [];
 			tracker.subscribe((e) => events.push(e));
 
@@ -135,12 +129,11 @@ describe("createTrackedMemo", () => {
 			expect(startEvent).toBeDefined();
 			expect(endEvent).toBeDefined();
 
-			dispose();
 		});
 	});
 
 	it("should record dependency edges when reading signals", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [countA] = createTrackedSignal(1, { name: "a" });
 			const [countB] = createTrackedSignal(2, { name: "b" });
 			createTrackedMemo(() => countA() + countB(), { name: "sum" });
@@ -150,12 +143,11 @@ describe("createTrackedMemo", () => {
 
 			expect(depEdges.length).toBe(2);
 
-			dispose();
 		});
 	});
 
 	it("should re-evaluate and emit events when dependencies change", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count, setCount] = createTrackedSignal(1, { name: "count" });
 			const doubled = createTrackedMemo(() => count() * 2, { name: "doubled" });
 
@@ -173,7 +165,6 @@ describe("createTrackedMemo", () => {
 
 			expect(doubled()).toBe(10);
 
-			dispose();
 		});
 	});
 });
@@ -184,7 +175,7 @@ describe("createTrackedEffect", () => {
 	});
 
 	it("should register an effect node on creation", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count] = createTrackedSignal(5);
 			createTrackedEffect(
 				() => {
@@ -199,70 +190,59 @@ describe("createTrackedEffect", () => {
 			expect(effectNode).toBeDefined();
 			expect(effectNode?.name).toBe("logger");
 
-			dispose();
 		});
 	});
 
 	it("should emit computation-execute-start and computation-execute-end events", async () => {
-		const events: ReactivityEvent[] = [];
-		const unsubscribe = tracker.subscribe((e) => events.push(e));
+		await testInRoot(async () => {
+			const events: ReactivityEvent[] = [];
+			const unsubscribe = tracker.subscribe((e) => events.push(e));
 
-		await new Promise<void>((resolve) => {
-			createRoot((dispose) => {
-				const [count] = createTrackedSignal(5);
-				createTrackedEffect(() => {
-					count();
-				});
-
-				// Allow effect to run in next microtask
-				queueMicrotask(() => {
-					dispose();
-					resolve();
-				});
+			const [count] = createTrackedSignal(5);
+			createTrackedEffect(() => {
+				count();
 			});
+
+			// Allow effect to run in next microtask
+			await new Promise((resolve) => queueMicrotask(resolve));
+
+			unsubscribe();
+
+			const startEvents = events.filter(
+				(e) => e.type === "computation-execute-start",
+			);
+			const endEvents = events.filter(
+				(e) => e.type === "computation-execute-end",
+			);
+
+			expect(startEvents.length).toBeGreaterThanOrEqual(1);
+			expect(endEvents.length).toBeGreaterThanOrEqual(1);
 		});
-
-		unsubscribe();
-
-		const startEvents = events.filter(
-			(e) => e.type === "computation-execute-start",
-		);
-		const endEvents = events.filter(
-			(e) => e.type === "computation-execute-end",
-		);
-
-		expect(startEvents.length).toBeGreaterThanOrEqual(1);
-		expect(endEvents.length).toBeGreaterThanOrEqual(1);
 	});
 
 	it("should record dependency edges when reading signals", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot((dispose) => {
-				const [countA] = createTrackedSignal(1, { name: "a" });
-				const [countB] = createTrackedSignal(2, { name: "b" });
-				createTrackedEffect(() => {
-					countA();
-					countB();
-				});
-
-				// Allow effect to run in next microtask
-				queueMicrotask(() => {
-					dispose();
-					resolve();
-				});
+		await testInRoot(async () => {
+			const [countA] = createTrackedSignal(1, { name: "a" });
+			const [countB] = createTrackedSignal(2, { name: "b" });
+			createTrackedEffect(() => {
+				countA();
+				countB();
 			});
+
+			// Allow effect to run in next microtask
+			await new Promise((resolve) => queueMicrotask(resolve));
+
+			const edges = Array.from(tracker.getEdges().values());
+			const depEdges = edges.filter((e) => e.type === "dependency");
+
+			expect(depEdges.length).toBe(2);
 		});
-
-		const edges = Array.from(tracker.getEdges().values());
-		const depEdges = edges.filter((e) => e.type === "dependency");
-
-		expect(depEdges.length).toBe(2);
 	});
 
 	it("should emit computation-dispose event on disposal", () => {
 		let disposeEffect: (() => void) | undefined;
 
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const events: ReactivityEvent[] = [];
 
 			const [count] = createTrackedSignal(1);
@@ -284,34 +264,28 @@ describe("createTrackedEffect", () => {
 			const effectNode = nodes.find((n) => n.name === "disposable");
 			expect(effectNode?.disposedAt).not.toBeNull();
 
-			dispose();
 		});
 	});
 
 	it("should create ownership edge between parent and child computation", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot((dispose) => {
-				const [count] = createTrackedSignal(1);
+		await testInRoot(async () => {
+			const [count] = createTrackedSignal(1);
 
-				createTrackedEffect(
-					() => {
-						count();
-						createTrackedMemo(() => count() * 2, { name: "childMemo" });
-					},
-					{ name: "parentEffect" },
-				);
+			createTrackedEffect(
+				() => {
+					count();
+					createTrackedMemo(() => count() * 2, { name: "childMemo" });
+				},
+				{ name: "parentEffect" },
+			);
 
-				// Allow effect to run in next microtask
-				queueMicrotask(() => {
-					const edges = Array.from(tracker.getEdges().values());
-					const ownershipEdges = edges.filter((e) => e.type === "ownership");
+			// Allow effect to run in next microtask
+			await new Promise((resolve) => queueMicrotask(resolve));
 
-					expect(ownershipEdges.length).toBeGreaterThanOrEqual(1);
+			const edges = Array.from(tracker.getEdges().values());
+			const ownershipEdges = edges.filter((e) => e.type === "ownership");
 
-					dispose();
-					resolve();
-				});
-			});
+			expect(ownershipEdges.length).toBeGreaterThanOrEqual(1);
 		});
 	});
 });
@@ -322,54 +296,49 @@ describe("Edge Cases", () => {
 	});
 
 	it("should handle conditional dependency changes during re-evaluation", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot((dispose) => {
-				const [condition, setCondition] = createTrackedSignal(true, {
-					name: "condition",
-				});
-				const [valueA] = createTrackedSignal(10, { name: "valueA" });
-				const [valueB] = createTrackedSignal(20, { name: "valueB" });
-
-				createTrackedMemo(
-					() => {
-						if (condition()) {
-							return valueA();
-						}
-						return valueB();
-					},
-					{ name: "conditionalMemo" },
-				);
-
-				queueMicrotask(() => {
-					const edgesBefore = Array.from(tracker.getEdges().values());
-					const conditionNodeId = Array.from(tracker.getNodes().values()).find(
-						(n) => n.name === "condition",
-					)?.id;
-					const valueANodeId = Array.from(tracker.getNodes().values()).find(
-						(n) => n.name === "valueA",
-					)?.id;
-
-					const hasConditionDep = edgesBefore.some(
-						(e) => e.type === "dependency" && e.source === conditionNodeId,
-					);
-					const hasValueADep = edgesBefore.some(
-						(e) => e.type === "dependency" && e.source === valueANodeId,
-					);
-
-					expect(hasConditionDep).toBe(true);
-					expect(hasValueADep).toBe(true);
-
-					setCondition(false);
-
-					dispose();
-					resolve();
-				});
+		await testInRoot(async () => {
+			const [condition, setCondition] = createTrackedSignal(true, {
+				name: "condition",
 			});
+			const [valueA] = createTrackedSignal(10, { name: "valueA" });
+			const [valueB] = createTrackedSignal(20, { name: "valueB" });
+
+			createTrackedMemo(
+				() => {
+					if (condition()) {
+						return valueA();
+					}
+					return valueB();
+				},
+				{ name: "conditionalMemo" },
+			);
+
+			await new Promise((resolve) => queueMicrotask(resolve));
+
+			const edgesBefore = Array.from(tracker.getEdges().values());
+			const conditionNodeId = Array.from(tracker.getNodes().values()).find(
+				(n) => n.name === "condition",
+			)?.id;
+			const valueANodeId = Array.from(tracker.getNodes().values()).find(
+				(n) => n.name === "valueA",
+			)?.id;
+
+			const hasConditionDep = edgesBefore.some(
+				(e) => e.type === "dependency" && e.source === conditionNodeId,
+			);
+			const hasValueADep = edgesBefore.some(
+				(e) => e.type === "dependency" && e.source === valueANodeId,
+			);
+
+			expect(hasConditionDep).toBe(true);
+			expect(hasValueADep).toBe(true);
+
+			setCondition(false);
 		});
 	});
 
 	it("should handle memos and effects without explicit names", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const [count] = createTrackedSignal(1);
 			const doubled = createTrackedMemo(() => count() * 2);
 			createTrackedEffect(() => {
@@ -387,7 +356,6 @@ describe("Edge Cases", () => {
 
 			expect(nodes.length).toBe(3);
 
-			dispose();
 		});
 	});
 });

@@ -1,7 +1,7 @@
-import { createRoot } from "solid-js";
 import { describe, expect, it } from "vitest";
-import type { ReactiveNode } from "../../types";
-import { useHierarchyLayout } from "./useHierarchyLayout";
+import { testInRoot } from "../../../__tests__/helpers";
+import type { ReactiveNode } from "../../../types";
+import { useHierarchyLayout } from "../useHierarchyLayout";
 
 describe("useHierarchyLayout", () => {
 	const createMockNode = (
@@ -25,18 +25,17 @@ describe("useHierarchyLayout", () => {
 	});
 
 	it("should return empty array when no nodes provided", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const nodes = () => new Map<string, ReactiveNode>();
 			const layout = useHierarchyLayout(nodes);
 
 			expect(layout.roots()).toEqual([]);
 			expect(layout.allNodes()).toEqual([]);
 
-			dispose();
 		}));
 
 	it("should identify root nodes (owner === null)", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const node1 = createMockNode("root-1", null);
 			const node2 = createMockNode("child-1", "root-1");
 
@@ -52,11 +51,10 @@ describe("useHierarchyLayout", () => {
 			expect(roots).toHaveLength(1);
 			expect(roots[0].data.id).toBe("root-1");
 
-			dispose();
 		}));
 
 	it("should build hierarchy from owner/owned relationships", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const root = createMockNode("root", null);
 			const child1 = createMockNode("child-1", "root");
 			const child2 = createMockNode("child-2", "root");
@@ -78,11 +76,10 @@ describe("useHierarchyLayout", () => {
 			expect(roots[0].children?.[0].data.id).toBe("child-1");
 			expect(roots[0].children?.[1].data.id).toBe("child-2");
 
-			dispose();
 		}));
 
 	it("should handle multiple separate trees", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const root1 = createMockNode("root-1", null);
 			const root2 = createMockNode("root-2", null);
 
@@ -97,11 +94,10 @@ describe("useHierarchyLayout", () => {
 
 			expect(roots).toHaveLength(2);
 
-			dispose();
 		}));
 
 	it("should calculate tree dimensions", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const root = createMockNode("root", null);
 			const child = createMockNode("child", "root");
 
@@ -118,11 +114,10 @@ describe("useHierarchyLayout", () => {
 			expect(layout.treeWidth()).toBeGreaterThan(0);
 			expect(layout.treeHeight()).toBeGreaterThan(0);
 
-			dispose();
 		}));
 
 	it("should include all nodes in allNodes accessor", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const root = createMockNode("root", null);
 			const child = createMockNode("child", "root");
 
@@ -139,6 +134,5 @@ describe("useHierarchyLayout", () => {
 
 			expect(allNodes).toHaveLength(2);
 
-			dispose();
 		}));
 });

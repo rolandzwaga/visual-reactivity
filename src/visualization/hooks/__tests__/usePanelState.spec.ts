@@ -1,5 +1,5 @@
-import { createRoot } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { flushMicrotasks, testInRoot } from "../../../__tests__/helpers";
 import { usePanelState } from "../usePanelState";
 
 describe("usePanelState", () => {
@@ -29,13 +29,12 @@ describe("usePanelState", () => {
 	});
 
 	it("should initialize with default preferences from localStorage", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences } = usePanelState();
 
 			expect(preferences().isVisible).toBe(false);
 			expect(preferences().width).toBe(350);
 
-			dispose();
 		});
 	});
 
@@ -45,19 +44,18 @@ describe("usePanelState", () => {
 			width: 400,
 		});
 
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences } = usePanelState();
 
 			expect(preferences().isVisible).toBe(true);
 			expect(preferences().width).toBe(400);
 
-			dispose();
 		});
 	});
 
 	it("should update visibility and persist to localStorage", async () => {
 		vi.useFakeTimers();
-		await createRoot(async (dispose) => {
+		await testInRoot(async () => {
 			const { preferences, setIsVisible } = usePanelState();
 
 			expect(preferences().isVisible).toBe(false);
@@ -66,20 +64,21 @@ describe("usePanelState", () => {
 
 			expect(preferences().isVisible).toBe(true);
 
-			// createEffect runs asynchronously - advance timers
+			// createEffect runs asynchronously - flush microtasks and advance timers
+			await flushMicrotasks();
 			await vi.runAllTimersAsync();
+			await flushMicrotasks();
 
 			const stored = mockStorage["visual-reactivity:panel-prefs"];
 			expect(stored).toBeTruthy();
 			expect(stored).toContain('"isVisible":true');
-			dispose();
 		});
 		vi.useRealTimers();
 	});
 
 	it("should update width and persist to localStorage", async () => {
 		vi.useFakeTimers();
-		await createRoot(async (dispose) => {
+		await testInRoot(async () => {
 			const { preferences, setWidth } = usePanelState();
 
 			expect(preferences().width).toBe(350);
@@ -88,43 +87,42 @@ describe("usePanelState", () => {
 
 			expect(preferences().width).toBe(500);
 
-			// createEffect runs asynchronously - advance timers
+			// createEffect runs asynchronously - flush microtasks and advance timers
+			await flushMicrotasks();
 			await vi.runAllTimersAsync();
+			await flushMicrotasks();
 
 			const stored = mockStorage["visual-reactivity:panel-prefs"];
 			expect(stored).toBeTruthy();
 			expect(stored).toContain('"width":500');
-			dispose();
 		});
 		vi.useRealTimers();
 	});
 
 	it("should clamp width to minimum (200px)", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences, setWidth } = usePanelState();
 
 			setWidth(100);
 
 			expect(preferences().width).toBe(200);
 
-			dispose();
 		});
 	});
 
 	it("should clamp width to maximum (2000px)", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences, setWidth } = usePanelState();
 
 			setWidth(5000);
 
 			expect(preferences().width).toBe(2000);
 
-			dispose();
 		});
 	});
 
 	it("should toggle visibility with toggleVisibility", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences, toggleVisibility } = usePanelState();
 
 			expect(preferences().isVisible).toBe(false);
@@ -135,27 +133,27 @@ describe("usePanelState", () => {
 			toggleVisibility();
 			expect(preferences().isVisible).toBe(false);
 
-			dispose();
 		});
 	});
 
 	it("should persist preferences after multiple updates", async () => {
 		vi.useFakeTimers();
-		await createRoot(async (dispose) => {
+		await testInRoot(async () => {
 			const { setIsVisible, setWidth } = usePanelState();
 
 			setIsVisible(true);
 			setWidth(450);
 
-			// createEffect runs asynchronously - advance timers
+			// createEffect runs asynchronously - flush microtasks and advance timers
+			await flushMicrotasks();
 			await vi.runAllTimersAsync();
+			await flushMicrotasks();
 
 			const stored = mockStorage["visual-reactivity:panel-prefs"];
 			expect(stored).toBeTruthy();
 			const saved = JSON.parse(stored);
 			expect(saved.isVisible).toBe(true);
 			expect(saved.width).toBe(450);
-			dispose();
 		});
 		vi.useRealTimers();
 	});
@@ -165,18 +163,17 @@ describe("usePanelState", () => {
 			throw new Error("QuotaExceededError");
 		});
 
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { setIsVisible } = usePanelState();
 
 			// Should not throw
 			expect(() => setIsVisible(true)).not.toThrow();
 
-			dispose();
 		});
 	});
 
 	it("should provide reactive preferences signal", () => {
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const { preferences, setWidth } = usePanelState();
 
 			const initialWidth = preferences().width;
@@ -187,7 +184,6 @@ describe("usePanelState", () => {
 			const updatedWidth = preferences().width;
 			expect(updatedWidth).toBe(400);
 
-			dispose();
 		});
 	});
 });

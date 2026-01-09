@@ -33,6 +33,16 @@
 
 [Gates determined based on constitution file]
 
+### Testing Guide Gate (Principle XXI)
+
+**Required if feature involves unit tests**:
+- [ ] Read `specs/TESTING-GUIDE.md` before creating test tasks
+- [ ] Verify test helpers exist in `src/__tests__/helpers`
+- [ ] Plan to use centralized helpers (`testInRoot()`, `useMockDate()`, etc.)
+- [ ] Avoid React testing patterns - use SolidJS patterns only
+
+**Enforcement**: Any plan involving tests MUST include explicit task to consult testing guide.
+
 ## Project Structure
 
 ### Documentation (this feature)

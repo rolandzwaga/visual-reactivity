@@ -1,19 +1,18 @@
-import { createRoot } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useTreeState } from "./useTreeState";
+import { flushMicrotasks, testInRoot } from "../../../__tests__/helpers";
+import { useTreeState } from "../useTreeState";
 
 describe("useTreeState", () => {
 	it("should initialize with empty expanded nodes", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			expect(state.expandedNodes()).toEqual(new Set());
 
-			dispose();
 		}));
 
 	it("should toggle node expansion", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			state.toggleExpanded("node-1");
@@ -22,11 +21,10 @@ describe("useTreeState", () => {
 			state.toggleExpanded("node-1");
 			expect(state.expandedNodes().has("node-1")).toBe(false);
 
-			dispose();
 		}));
 
 	it("should allow multiple nodes to be expanded", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			state.toggleExpanded("node-1");
@@ -35,11 +33,10 @@ describe("useTreeState", () => {
 			expect(state.expandedNodes().has("node-1")).toBe(true);
 			expect(state.expandedNodes().has("node-2")).toBe(true);
 
-			dispose();
 		}));
 
 	it("should track disposing nodes with timestamps", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 			const now = Date.now();
 
@@ -49,11 +46,10 @@ describe("useTreeState", () => {
 			expect(disposingNodes.has("node-1")).toBe(true);
 			expect(disposingNodes.get("node-1")).toBeGreaterThanOrEqual(now);
 
-			dispose();
 		}));
 
 	it("should set and get selected node", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			expect(state.selectedNodeId()).toBe(null);
@@ -64,11 +60,10 @@ describe("useTreeState", () => {
 			state.setSelectedNodeId(null);
 			expect(state.selectedNodeId()).toBe(null);
 
-			dispose();
 		}));
 
 	it("should set and get hovered node", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			expect(state.hoveredNodeId()).toBe(null);
@@ -79,11 +74,10 @@ describe("useTreeState", () => {
 			state.setHoveredNodeId(null);
 			expect(state.hoveredNodeId()).toBe(null);
 
-			dispose();
 		}));
 
 	it("should reset all state", () =>
-		createRoot((dispose) => {
+		testInRoot(() => {
 			const state = useTreeState();
 
 			state.toggleExpanded("node-1");
@@ -98,19 +92,16 @@ describe("useTreeState", () => {
 			expect(state.selectedNodeId()).toBe(null);
 			expect(state.hoveredNodeId()).toBe(null);
 
-			dispose();
 		}));
 
 	describe("default expansion depth", () => {
 		it("should support initializing with default expanded nodes", () =>
-			createRoot((dispose) => {
+			testInRoot(() => {
 				const defaultExpanded = new Set(["node-1", "node-2"]);
 				const state = useTreeState(defaultExpanded);
 
 				expect(state.expandedNodes().has("node-1")).toBe(true);
 				expect(state.expandedNodes().has("node-2")).toBe(true);
-
-				dispose();
 			}));
 	});
 
@@ -123,41 +114,45 @@ describe("useTreeState", () => {
 			vi.useRealTimers();
 		});
 
-		it("should track disposed nodes and remove them after 5 seconds", () =>
-			createRoot((dispose) => {
+		it("should track disposed nodes and remove them after 5 seconds", async () =>
+			testInRoot(async () => {
 				const state = useTreeState();
 
 				state.markDisposing("node-1");
 				expect(state.disposingNodes().has("node-1")).toBe(true);
 
+				await flushMicrotasks();
 				vi.advanceTimersByTime(5000);
+				await flushMicrotasks();
 
 				expect(state.disposingNodes().has("node-1")).toBe(false);
-
-				dispose();
 			}));
 
-		it("should handle multiple disposed nodes independently", () =>
-			createRoot((dispose) => {
+		it("should handle multiple disposed nodes independently", async () =>
+			testInRoot(async () => {
 				const state = useTreeState();
 
 				state.markDisposing("node-1");
+				await flushMicrotasks();
 				vi.advanceTimersByTime(2000);
+				await flushMicrotasks();
 				state.markDisposing("node-2");
 
 				expect(state.disposingNodes().has("node-1")).toBe(true);
 				expect(state.disposingNodes().has("node-2")).toBe(true);
 
+				await flushMicrotasks();
 				vi.advanceTimersByTime(3000);
+				await flushMicrotasks();
 
 				expect(state.disposingNodes().has("node-1")).toBe(false);
 				expect(state.disposingNodes().has("node-2")).toBe(true);
 
+				await flushMicrotasks();
 				vi.advanceTimersByTime(2000);
+				await flushMicrotasks();
 
 				expect(state.disposingNodes().has("node-2")).toBe(false);
-
-				dispose();
 			}));
 	});
 });

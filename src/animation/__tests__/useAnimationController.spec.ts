@@ -1,21 +1,13 @@
-import { createRoot } from "solid-js";
 import { afterEach, describe, expect, it } from "vitest";
+import { testInRoot } from "../../__tests__/helpers";
 import type { AnimationControllerOptions } from "../types";
 import { createAnimationController } from "../useAnimationController";
 
 describe("useAnimationController", () => {
-	let dispose: () => void;
-
-	afterEach(() => {
-		if (dispose) {
-			dispose();
-		}
-	});
 
 	describe("creation", () => {
 		it("should create controller with default options", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				expect(controller).toBeDefined();
 				expect(controller.playback).toBeDefined();
@@ -23,8 +15,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should accept custom options", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const options: AnimationControllerOptions = {
 					baseDuration: 500,
 					showBatchIndicator: false,
@@ -37,16 +28,14 @@ describe("useAnimationController", () => {
 
 	describe("playback", () => {
 		it("should start in playing state", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				expect(controller.playback.state().isPaused).toBe(false);
 			});
 		});
 
 		it("should toggle pause state", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.playback.togglePause();
 				expect(controller.playback.state().isPaused).toBe(true);
@@ -56,8 +45,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should set pause state directly", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.playback.setPaused(true);
 				expect(controller.playback.state().isPaused).toBe(true);
@@ -65,16 +53,14 @@ describe("useAnimationController", () => {
 		});
 
 		it("should have default speed of 1.0", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				expect(controller.playback.state().speedMultiplier).toBe(1.0);
 			});
 		});
 
 		it("should set speed multiplier", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.playback.setSpeed(0.5);
 				expect(controller.playback.state().speedMultiplier).toBe(0.5);
@@ -82,8 +68,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should clamp speed to valid range", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.playback.setSpeed(0.1);
 				expect(controller.playback.state().speedMultiplier).toBe(0.25);
@@ -95,8 +80,7 @@ describe("useAnimationController", () => {
 
 	describe("node visual state", () => {
 		it("should return reactive getter for node state", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				const getState = controller.getNodeVisualState("node-1");
 				expect(typeof getState).toBe("function");
@@ -105,8 +89,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should return default values for unknown node", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				const state = controller.getNodeVisualState("unknown")();
 				expect(state.pulseScale).toBe(1);
@@ -118,8 +101,7 @@ describe("useAnimationController", () => {
 
 	describe("edge visual state", () => {
 		it("should return reactive getter for edge state", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				const getState = controller.getEdgeVisualState("edge-1");
 				expect(typeof getState).toBe("function");
@@ -128,8 +110,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should return default values for unknown edge", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				const state = controller.getEdgeVisualState("unknown")();
 				expect(state.particleProgress).toBeNull();
@@ -141,8 +122,7 @@ describe("useAnimationController", () => {
 
 	describe("animations", () => {
 		it("should trigger signal write animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateSignalWrite("node-1");
 				expect(controller.getNodeVisualState("node-1")).toBeDefined();
@@ -150,8 +130,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should trigger execution start animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateExecutionStart("node-1");
 				expect(controller.getNodeVisualState("node-1")().isExecuting).toBe(
@@ -161,8 +140,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should trigger execution end animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateExecutionStart("node-1");
 				controller.animateExecutionEnd("node-1");
@@ -173,8 +151,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should set node stale state", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.setNodeStale("node-1", true);
 				expect(controller.getNodeVisualState("node-1")().isStale).toBe(true);
@@ -182,8 +159,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should trigger edge add animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateEdgeAdd("edge-1");
 				expect(controller.getEdgeVisualState("edge-1")).toBeDefined();
@@ -191,8 +167,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should trigger edge remove animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateEdgeRemove("edge-1");
 				expect(controller.getEdgeVisualState("edge-1")).toBeDefined();
@@ -200,8 +175,7 @@ describe("useAnimationController", () => {
 		});
 
 		it("should trigger disposal animation", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.animateDisposal("node-1");
 				expect(controller.getNodeVisualState("node-1")).toBeDefined();
@@ -211,8 +185,7 @@ describe("useAnimationController", () => {
 
 	describe("batch handling", () => {
 		it("should start and end batch", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.startBatch();
 				controller.animateSignalWrite("node-1");
@@ -224,8 +197,7 @@ describe("useAnimationController", () => {
 
 	describe("dispose", () => {
 		it("should cleanup on dispose", () => {
-			createRoot((d) => {
-				dispose = d;
+			testInRoot(() => {
 				const controller = createAnimationController();
 				controller.dispose();
 			});

@@ -1,6 +1,6 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
-import { ConfirmDialog } from "./ConfirmDialog";
+import { ConfirmDialog } from "../ConfirmDialog";
 
 describe("ConfirmDialog", () => {
 	it("should render dialog with message", () => {

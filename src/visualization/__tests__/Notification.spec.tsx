@@ -1,6 +1,6 @@
 import { render } from "@solidjs/testing-library";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Notification } from "./Notification";
+import { Notification } from "../Notification";
 
 describe("Notification", () => {
 	beforeEach(() => {

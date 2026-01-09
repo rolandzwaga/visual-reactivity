@@ -1,9 +1,9 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
-import { tracker } from "../instrumentation";
-import { OwnershipTree } from "./OwnershipTree";
+import { tracker } from "../../instrumentation";
+import { OwnershipTree } from "../OwnershipTree";
 
-vi.mock("../instrumentation", () => ({
+vi.mock("../../instrumentation", () => ({
 	tracker: {
 		getNodes: vi.fn(),
 		getEdges: vi.fn(),

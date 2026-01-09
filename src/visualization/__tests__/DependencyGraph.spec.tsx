@@ -1,6 +1,6 @@
 import { render } from "@solidjs/testing-library";
-import { createRoot } from "solid-js";
 import { describe, expect, it } from "vitest";
+import { testInRoot } from "../../__tests__/helpers";
 import { DependencyGraph } from "../DependencyGraph";
 
 describe("DependencyGraph", () => {
@@ -22,41 +22,26 @@ describe("DependencyGraph", () => {
 	});
 
 	it("renders signal nodes as circles", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot(async (dispose) => {
-				render(() => <DependencyGraph />);
+		await testInRoot(async () => {
+			render(() => <DependencyGraph />);
 
-				await new Promise((r) => setTimeout(r, 100));
-
-				dispose();
-				resolve();
-			});
+			await new Promise((r) => setTimeout(r, 100));
 		});
 	});
 
 	it("renders edges between connected nodes", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot(async (dispose) => {
-				render(() => <DependencyGraph />);
+		await testInRoot(async () => {
+			render(() => <DependencyGraph />);
 
-				await new Promise((r) => setTimeout(r, 100));
-
-				dispose();
-				resolve();
-			});
+			await new Promise((r) => setTimeout(r, 100));
 		});
 	});
 
 	it("applies force-directed layout", async () => {
-		await new Promise<void>((resolve) => {
-			createRoot(async (dispose) => {
-				render(() => <DependencyGraph />);
+		await testInRoot(async () => {
+			render(() => <DependencyGraph />);
 
-				await new Promise((r) => setTimeout(r, 100));
-
-				dispose();
-				resolve();
-			});
+			await new Promise((r) => setTimeout(r, 100));
 		});
 	});
 });
