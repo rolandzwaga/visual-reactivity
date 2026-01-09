@@ -9,6 +9,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-08
 - N/A (in-memory animation state) (003-animation-system)
 - TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (already installed for sparklines) (004-live-values-panel)
 - Browser localStorage for panel visibility and width preferences (004-live-values-panel)
+- TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-hierarchy, d3-selection, d3-zoom for reuse) (005-ownership-tree-view)
+- In-memory state from ReactivityTracker (no persistence) (005-ownership-tree-view)
 
 - TypeScript 5.9.3 with strict mode + SolidJS 1.9.10 (wrapping its primitives) (001-core-instrumentation)
 
@@ -40,9 +42,9 @@ tests/
 TypeScript 5.9.3 with strict mode: Follow standard conventions
 
 ## Recent Changes
+- 005-ownership-tree-view: Added TypeScript 5.9.3 with strict mode enabled + SolidJS 1.9.10, D3.js (d3-hierarchy, d3-selection, d3-zoom for reuse)
 - 004-live-values-panel: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (already installed for sparklines)
 - 003-animation-system: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-transition, d3-ease, d3-interpolate)
-- 002-dependency-graph-visualization: Added TypeScript 5.9.3 with strict mode + SolidJS 1.9.10, D3.js (d3-force, d3-selection, d3-zoom)
 
 
 <!-- MANUAL ADDITIONS START -->

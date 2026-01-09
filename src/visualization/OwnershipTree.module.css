@@ -1,0 +1,135 @@
+.container {
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	position: relative;
+}
+
+.svg {
+	display: block;
+}
+
+.node {
+	cursor: pointer;
+	transition: transform var(--transition-base);
+}
+
+.node:hover {
+	transform: scale(1.1);
+}
+
+.edge {
+	fill: none;
+	stroke: var(--color-gray-400);
+	stroke-width: var(--border-width-thin);
+}
+
+.edgePath {
+	fill: none;
+	stroke: var(--color-gray-400);
+	stroke-width: var(--border-width-thin);
+}
+
+.disposed {
+	opacity: var(--opacity-disabled);
+	filter: grayscale(100%);
+	transition:
+		opacity var(--transition-slow),
+		filter var(--transition-slow);
+}
+
+.disposedLabel {
+	font-size: var(--font-size-xs);
+	fill: var(--color-text-secondary);
+	text-anchor: middle;
+	font-weight: var(--font-weight-semibold);
+	opacity: var(--opacity-semi);
+}
+
+.selected {
+	stroke: var(--color-primary);
+	stroke-width: var(--border-width-thick);
+}
+
+.expandIcon {
+	cursor: pointer;
+	fill: var(--color-text-secondary);
+}
+
+.expandIcon:hover {
+	fill: var(--color-primary);
+}
+
+.expandButton {
+	cursor: pointer;
+	transform: translate(20px, 0);
+}
+
+.expandButton:hover circle {
+	stroke: var(--color-primary);
+	stroke-width: var(--border-width-medium);
+}
+
+.expandButton:hover text {
+	fill: var(--color-primary);
+}
+
+.contextMenu {
+	position: fixed;
+	background: var(--color-bg-primary);
+	border: var(--border-width-thin) solid var(--color-border);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-sm);
+	z-index: var(--z-dialog);
+	padding: var(--spacing-xs) 0;
+	min-width: 160px;
+}
+
+.contextMenuItem {
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-lg);
+	background: none;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+	font-size: var(--font-size-lg);
+	color: var(--color-text-primary);
+	transition: background-color var(--transition-fast);
+}
+
+.contextMenuItem:hover {
+	background: var(--color-bg-hover);
+}
+
+.contextMenuItem:disabled {
+	color: var(--color-text-tertiary);
+	cursor: not-allowed;
+}
+
+.contextMenuItem:disabled:hover {
+	background: none;
+}
+
+.emptyState {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: var(--spacing-2xl);
+	text-align: center;
+}
+
+.emptyMessage {
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-text-primary);
+	margin: 0 0 var(--spacing-sm) 0;
+}
+
+.emptyHint {
+	font-size: var(--font-size-lg);
+	color: var(--color-text-secondary);
+	margin: 0;
+}
