@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import type { TimelineCursorProps } from "../../types/timeline";
 import styles from "./TimelineCursor.module.css";
 

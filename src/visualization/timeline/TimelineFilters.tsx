@@ -1,6 +1,6 @@
-import { For, type Component } from "solid-js";
-import type { TimelineFiltersProps } from "../../types/timeline";
+import { type Component, For } from "solid-js";
 import type { EventType } from "../../types/events";
+import type { TimelineFiltersProps } from "../../types/timeline";
 import styles from "./TimelineFilters.module.css";
 
 const EVENT_TYPES: EventType[] = [

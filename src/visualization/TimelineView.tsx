@@ -1,14 +1,24 @@
-import { type Component, createSignal, For, onMount } from "solid-js";
+import { type Component, createSignal, For, onMount, Show } from "solid-js";
 import { tracker } from "../instrumentation";
 import { batchEvents } from "../lib/eventBatcher";
-import type { TimelineViewProps } from "../types/timeline";
+import type { ReactivityEvent } from "../types/events";
+import type { TimelineEvent, TimelineViewProps } from "../types/timeline";
 import { useTimelineLayout } from "./hooks/useTimelineLayout";
 import styles from "./TimelineView.module.css";
+import { EventDetailsPanel } from "./timeline/EventDetailsPanel";
+import { EventTooltip } from "./timeline/EventTooltip";
 import { Swimlane } from "./timeline/Swimlane";
 import { TimelineAxis } from "./timeline/TimelineAxis";
 
 export const TimelineView: Component<TimelineViewProps> = (props) => {
-	const [events, setEvents] = createSignal<any[]>([]);
+	const [events, setEvents] = createSignal<ReactivityEvent[]>([]);
+	const [hoveredEvent, setHoveredEvent] = createSignal<TimelineEvent | null>(
+		null,
+	);
+	const [selectedEvent, setSelectedEvent] = createSignal<TimelineEvent | null>(
+		null,
+	);
+	const [tooltipPos, setTooltipPos] = createSignal({ x: 0, y: 0 });
 
 	const nodes = () => Array.from(tracker.getNodes().values());
 
@@ -57,6 +67,14 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 
 	const handleEventHover = (event: TimelineEvent | null) => {
 		setHoveredEvent(event);
+		if (event) {
+			const x = layout.scale().scale(event.timestamp);
+			const swimlane = layout
+				.swimlanes()
+				.find((s) => s.nodeId === event.nodeId);
+			const y = swimlane ? swimlane.yPosition + swimlane.height / 2 : 0;
+			setTooltipPos({ x, y });
+		}
 	};
 
 	return (
@@ -92,7 +110,7 @@ export const TimelineView: Component<TimelineViewProps> = (props) => {
 					event={hoveredEvent()!}
 					x={tooltipPos().x}
 					y={tooltipPos().y}
-					visible={true}
+					visible={!!hoveredEvent()}
 				/>
 			</Show>
 

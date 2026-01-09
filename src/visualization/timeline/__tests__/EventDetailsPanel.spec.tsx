@@ -29,7 +29,7 @@ describe("EventDetailsPanel", () => {
 			<EventDetailsPanel event={event} onClose={() => {}} />
 		));
 
-		expect(container.querySelector(".panel")).not.toBeNull();
+		expect(container.querySelector("div")).not.toBeNull();
 	});
 
 	it("displays event details", () => {

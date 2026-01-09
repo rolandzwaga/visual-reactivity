@@ -1,4 +1,4 @@
-import { scaleUtc, scaleUtc } from "d3-scale";
+import { scaleUtc } from "d3-scale";
 import { createStore } from "solid-js/store";
 import type { TimelineState } from "../types/timeline";
 

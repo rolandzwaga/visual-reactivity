@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import type { BatchIndicatorProps } from "../../types/timeline";
 import styles from "./BatchIndicator.module.css";
 

@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import type { PlaybackControlsProps } from "../../types/timeline";
 import styles from "./PlaybackControls.module.css";
 

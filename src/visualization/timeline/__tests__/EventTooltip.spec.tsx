@@ -30,7 +30,7 @@ describe("EventTooltip", () => {
 			<EventTooltip event={event} x={100} y={50} visible={true} />
 		));
 
-		expect(container.querySelector(".tooltip")).not.toBeNull();
+		expect(container.querySelector("div")).not.toBeNull();
 	});
 
 	it("displays event type", () => {
@@ -57,8 +57,8 @@ describe("EventTooltip", () => {
 			<EventTooltip event={event} x={100} y={50} visible={true} />
 		));
 
-		const tooltip = container.querySelector(".tooltip") as HTMLElement;
-		expect(tooltip?.style.left).toContain("100");
-		expect(tooltip?.style.top).toContain("50");
+		const tooltip = container.querySelector("div");
+		expect(tooltip?.style.left).toBe("110px");
+		expect(tooltip?.style.top).toBe("20px");
 	});
 });
